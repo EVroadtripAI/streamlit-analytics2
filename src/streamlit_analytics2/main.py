@@ -345,7 +345,7 @@ def start_tracking(
     # Reset session state.
     if "user_tracked" not in st.session_state:
         st.session_state.user_tracked = False
-    if "state_dic" not in st.session_state:
+    if "state_dict" not in st.session_state:
         st.session_state.state_dict = {}
     if "last_time" not in st.session_state:
         st.session_state.last_time = datetime.datetime.now()
