@@ -42,8 +42,8 @@ We use GitHub issues to track public bugs. Report a bug by [opening a new issue]
 ## Use a Consistent Coding Style
 
 - We follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide for Python code.
-- Ensure your code passes the run_checks.sh (described below)
-  ```
+<!-- - Ensure your code passes the run_checks.sh (described below)
+  ``` -->
 
 ## License
 
@@ -88,6 +88,7 @@ pipenv install --dev
 Activate your pipenv environment:
 ```sh
 pipenv shell
+pipenv update
 ```
 
 ### 7. Write code, test new features!
