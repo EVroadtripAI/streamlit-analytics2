@@ -8,6 +8,7 @@ import streamlit as st
 
 from . import utils
 
+
 @st.experimental_dialog("Streamlit-Analytics2", width="large")
 def show_results(counts, reset_callback, unsafe_password=None):
     """Show analytics results in streamlit, asking for password if given."""
