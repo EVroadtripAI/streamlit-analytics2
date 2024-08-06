@@ -25,7 +25,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "streamlit >= 1.31.0",
+    "streamlit >= 1.37.0",
     "pandas",
     "altair",
     "google-cloud-firestore"
