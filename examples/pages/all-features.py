@@ -83,7 +83,7 @@ def test_analytics_track_local_json_loading():
 # Dropdown menu for selecting the test
 option = st.selectbox(
     'Select the functionality to test:',
-    ('Password Protection',  'Firebase Storage', 'Firebase st.secret use', 'Test All Widgets', 
+    ('Test All Widgets', 'Password Protection',  'Firebase Storage', 'Firebase st.secret use',
      'Analytics Track Local JSON Storing', 'Analytics Track Local JSON Loading')
 )
 
