@@ -14,14 +14,16 @@ import streamlit as st
 from . import display, firestore
 from .utils import replace_empty
 
-logging.basicConfig(
-    level=logging.INFO, format="streamlit-analytics2: %(levelname)s: %(message)s"
-)
+# logging.basicConfig(
+#     level=logging.INFO, format="streamlit-analytics2: %(levelname)s: %(message)s"
+# )
+# Umcomment this during testing
 
 # Dict that holds all analytics results. Note that this is persistent across users,
 # as modules are only imported once by a streamlit app.
 counts = {"loaded_from_firestore": False}
 
+logging.info("SA2: Streamlit-analytics2 successfully imported")
 
 def reset_counts():
     # Use yesterday as first entry to make chart look better.
@@ -330,17 +332,17 @@ def start_tracking(
 
             if verbose:
                 logging.info(f"{log_msg_prefix}{load_from_json}")
-                logging.info("Success! Loaded counts:")
+                logging.info("SA2: Success! Loaded counts:")
                 logging.info(counts)
 
         except FileNotFoundError:
             if verbose:
                 logging.warning(
-                    f"File {load_from_json} not found, proceeding with empty counts."
+                    f"SA2: File {load_from_json} not found, proceeding with empty counts."
                 )
         except Exception as e:
             # Catch-all for any other exceptions, log the error
-            logging.error(f"Error loading counts from {load_from_json}: {e}")
+            logging.error(f"SA2: Error loading counts from {load_from_json}: {e}")
 
     # Reset session state.
     if "user_tracked" not in st.session_state:
@@ -413,7 +415,7 @@ def start_tracking(
     # }
 
     if verbose:
-        logging.info("\nTracking script execution with streamlit-analytics...")
+        logging.info("\nSA2: Tracking script execution with streamlit-analytics...")
 
 
 def stop_tracking(
@@ -434,7 +436,7 @@ def stop_tracking(
     """
 
     if verbose:
-        logging.info("Finished script execution. New counts:")
+        logging.info("SA2: Finished script execution. New counts:")
         logging.info(
             "%s", counts
         )  # Use %s and pass counts to logging to handle complex objects
