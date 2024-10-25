@@ -25,6 +25,7 @@ counts = {"loaded_from_firestore": False}
 
 logging.info("SA2: Streamlit-analytics2 successfully imported")
 
+
 def reset_counts():
     # Use yesterday as first entry to make chart look better.
     yesterday = str(datetime.date.today() - datetime.timedelta(days=1))
