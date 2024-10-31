@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-streamlit = ">=1.37"
+streamlit = ">=1.39"
 altair = "*"
 pandas = "*"
 google-cloud-firestore = "*"
@@ -23,4 +23,4 @@ build = "*"
 twine = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"
