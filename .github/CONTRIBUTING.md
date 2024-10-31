@@ -66,16 +66,16 @@ git checkout -b name_of_your_new_branch
 > **IMPORTANT**: Start the name of your branch with "test/". Pushing on this branch will trigger a release to [TestPyPI](https://test.pypi.org/project/streamlit-analytics2/) where we can further verify that the code works as expected.
 
 ### 3. Install Python and pipenv
-Ensure you have Python 3.9.x installed, then install pipenv:
+Ensure you have Python 3.10.x installed, then install pipenv:
 ```sh
 pip install --user pipenv
 ```
 
 ### 4. Create a Pipenv Environment
-Set up your pipenv environment with Python at least python 3.9. 
+Set up your pipenv environment with Python at least python 3.10. 
 A higher version should be fine unless you are using cutting edge python expressions.
 ```sh
-pipenv --python 3.9
+pipenv --python 3.10
 ```
 
 ### 5. Install Dependencies

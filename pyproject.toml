@@ -23,7 +23,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 4 - Beta"
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "streamlit >= 1.37.0",
     "pandas",
