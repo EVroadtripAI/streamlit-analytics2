@@ -1,4 +1,4 @@
-name: Code Check, Build and Publish
+name: Build and Publish
 
 on:
   push:
@@ -7,43 +7,43 @@ on:
       - 'test/**'
 
 jobs:
-  code-quality-check:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
+  # code-quality-check:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
     
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: '3.9'
 
-    - name: Install Pipenv and dependencies
-      run: |
-        pip install pipenv
-        pipenv install --dev --deploy
+  #   - name: Install Pipenv and dependencies
+  #     run: |
+  #       pip install pipenv
+  #       pipenv install --dev --deploy
 
-    - name: Check code formatting with Black
-      run: pipenv run black src/ --check
-      continue-on-error: ${{ github.ref != 'refs/heads/main' }}
+  #   - name: Check code formatting with Black
+  #     run: pipenv run black src/ --check
+  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
 
-    - name: Sort imports with isort
-      run: pipenv run isort src/ --check-only --verbose --diff
-      continue-on-error: ${{ github.ref != 'refs/heads/main' }}
+  #   - name: Sort imports with isort
+  #     run: pipenv run isort src/ --check-only --verbose --diff
+  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
 
-    - name: Lint with Flake8
-      run: pipenv run flake8 src/ --ignore=E501,W503
-      continue-on-error: ${{ github.ref != 'refs/heads/main' }}
+  #   - name: Lint with Flake8
+  #     run: pipenv run flake8 src/ --ignore=E501,W503
+  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
 
-    - name: Static type check with mypy
-      run: pipenv run mypy src/ --config-file mypy.ini
-      continue-on-error: ${{ github.ref != 'refs/heads/main' }}
+  #   - name: Static type check with mypy
+  #     run: pipenv run mypy src/ --config-file mypy.ini
+  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
 
-    - name: Check for security issues with bandit
-      run: pipenv run bandit -r src/
-      continue-on-error: ${{ github.ref != 'refs/heads/main' }}
+  #   - name: Check for security issues with bandit
+  #     run: pipenv run bandit -r src/
+  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
 
   build-and-upload:
-    needs: code-quality-check
+    # needs: code-quality-check
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2

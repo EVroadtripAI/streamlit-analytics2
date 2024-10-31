@@ -17,7 +17,7 @@ from .utils import replace_empty
 # logging.basicConfig(
 #     level=logging.INFO, format="streamlit-analytics2: %(levelname)s: %(message)s"
 # )
-# Umcomment this during testing
+# Uncomment this during testing
 
 # Dict that holds all analytics results. Note that this is persistent across users,
 # as modules are only imported once by a streamlit app.
