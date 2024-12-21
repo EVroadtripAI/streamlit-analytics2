@@ -1,5 +1,6 @@
-import toml
 import os
+
+import toml
 
 # Create streamlit secrets directory and secrets.toml if it doesn't exist
 secrets_dir = "./.streamlit"

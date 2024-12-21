@@ -7,6 +7,7 @@ import platform
 import sys
 
 import streamlit as st
+
 import streamlit_analytics2 as streamlit_analytics
 
 # Get the directory of the current script
