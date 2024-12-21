@@ -25,7 +25,7 @@ jobs:
           pip install uv
           uv venv
           source .venv/bin/activate
-          uv pip install build twine
+          uv pip install hatch build twine
       
       - name: Build package
         run: python -m build
