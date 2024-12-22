@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # For complete history if needed for versioning
+          fetch-depth: 0  # For complete history
       
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -25,7 +25,7 @@ jobs:
           pip install uv
           uv venv
           source .venv/bin/activate
-          uv pip install hatch build twine
+          uv pip install build hatchling twine  # Added build and hatchling
       
       - name: Build package
         run: python -m build
