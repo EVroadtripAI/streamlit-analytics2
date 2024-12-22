@@ -55,14 +55,22 @@ Repository = "https://github.com/444B/streamlit-analytics2"
 Documentation = "https://github.com/444B/streamlit-analytics2/wiki"
 Issues = "https://github.com/444B/streamlit-analytics2/issues"
 
+[tool.hatch.build]
+include = [
+    "src/**/*.py",
+]
+exclude = [
+    "tests/*",
+    "examples/*",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/streamlit_analytics2"]
-include = ["src/streamlit_analytics2"]
+
 
 [tool.hatch.build.targets.sdist]
 include = [
     "/src",
-    "/tests",
     "LICENSE",
 ]
 
