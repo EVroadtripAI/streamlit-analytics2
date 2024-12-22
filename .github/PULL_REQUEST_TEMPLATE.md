@@ -1,34 +1,35 @@
-# Pull Request Template
+## Description
 
-## TL;DR
-Provide a brief summary of the changes made.
-- 
+Briefly describe the changes made in this pull request.
 
-## Problem Solved
-1. Describe the problem your changes address. 
-2. Please mention the issue number if relevant
-- 
--
+## Related Issue(s)
 
-## Screenshots
-If applicable, add screenshots to help explain your solution. For adding images, use:
-- 
+- Closes #[issue number]
 
-## Changes Made(Optional)
-List the main changes in bullet points.
+## Changes Made
 
-- [ ] Change 1...
-- [ ] Change 2...
-- [ ] ...
+- [ ] Change 1
+- [ ] Change 2
+- [ ] Change 3
 
-## Manual Testing
-- [ ] You have manually tested all changes to ensure they work as intended. Replace the [ ] with a [X] if True.
+## Testing
 
+- [ ] I have manually tested these changes and confirm they work as intended.
 
-**How was this tested?**
-Describe the tests that you ran to verify your changes.
-- 
+**Testing Details:**
+Describe how you tested the changes.
+
+## Screenshots (if applicable)
+
+Add any relevant screenshots here.
+
+## Checklist
+
+- [ ] I have read the [CONTRIBUTING](CONTRIBUTING.md) guide.
+- [ ] I have commented my code, particularly in hard-to-understand areas.
+- [ ] I have made corresponding changes to the documentation (README.md, CONTRIBUTING.md, etc.).
+- [ ] My changes generate no new warnings or errors.
 
 ## Additional Notes
-Include any additional information that might be relevant for reviewers.
-- 
+
+Add any other notes or context about the pull request here.
