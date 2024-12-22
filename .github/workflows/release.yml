@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # For complete history
+          fetch-depth: 0
       
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -20,15 +20,13 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
       
-      - name: Install build tools
+      - name: Install build tools and build package
         run: |
           pip install uv
           uv venv
           source .venv/bin/activate
-          uv pip install build hatchling twine  # Added build and hatchling
-      
-      - name: Build package
-        run: python -m build
+          uv pip install build hatchling twine
+          .venv/bin/python -m build  # Use the full path to Python in the virtual environment
       
       - name: Upload to TestPyPI
         if: contains(github.ref, 'refs/heads/test/')
