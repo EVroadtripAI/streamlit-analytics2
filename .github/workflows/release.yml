@@ -20,13 +20,18 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
       
-      - name: Install build tools and build package
+      - name: Install and configure uv
         run: |
           pip install uv
           uv venv
           source .venv/bin/activate
           uv pip install build hatchling twine
-          .venv/bin/python -m build  # Use the full path to Python in the virtual environment
+      
+      - name: Build and check package
+        run: |
+          source .venv/bin/activate
+          python -m build
+          twine check dist/*
       
       - name: Upload to TestPyPI
         if: contains(github.ref, 'refs/heads/test/')
@@ -34,14 +39,14 @@ jobs:
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
-          verbose: true
           verify-metadata: true
           skip-existing: true
+          verbose: true
       
       - name: Upload to PyPI
         if: github.ref == 'refs/heads/main'
         uses: pypa/gh-action-pypi-publish@v1.8.11
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
-          verbose: true
           verify-metadata: true
+          verbose: true

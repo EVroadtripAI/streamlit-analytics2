@@ -57,6 +57,14 @@ Issues = "https://github.com/444B/streamlit-analytics2/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/streamlit_analytics2"]
+include = ["src/streamlit_analytics2"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "LICENSE",
+]
 
 [tool.hatch.version]
 path = "src/streamlit_analytics2/__init__.py"
@@ -121,5 +129,4 @@ exclude_dirs = ["tests", "docs"]
 skips = ["B311"]
 
 [tool.uv]
-python = ">=3.12"
 exclude = ["__pycache__", "*.pyc"]
