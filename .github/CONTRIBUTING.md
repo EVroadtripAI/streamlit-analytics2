@@ -107,7 +107,7 @@ streamlit run examples/minimal.py
 ```sh
 cd tests/
 chmod +x /run_checks.sh
-./run_check.sh
+./run_checks.sh
 ``` 
 
 This will perform formatting and checks with the following packages:
