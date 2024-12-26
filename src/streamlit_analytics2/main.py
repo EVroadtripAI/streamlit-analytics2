@@ -7,9 +7,10 @@ import json
 import logging
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Union, Dict, Any
 
 import streamlit as st
+from streamlit import session_state as ss
 
 from . import display, firestore
 from .utils import replace_empty
@@ -24,6 +25,31 @@ from .utils import replace_empty
 counts = {"loaded_from_firestore": False}
 
 logging.info("SA2: Streamlit-analytics2 successfully imported")
+
+
+def session_counts_reset() -> Dict[str, Any]:
+    """
+    Reset the session counts to a new session.
+
+    Returns
+    -------
+    Dict[str, Any]
+        The new session counts.
+    """
+    # Use yesterday as first entry to make chart look better.
+    yesterday = str(datetime.date.today() - datetime.timedelta(days=1))
+    output = {}
+    output["total_pageviews"] = 0
+    output["total_script_runs"] = 0
+    output["total_time_seconds"] = 0
+    output["per_day"] = {"days": [str(yesterday)], "pageviews": [0], "script_runs": [0]}
+    output["widgets"] = {}
+    output["start_time"] = datetime.datetime.now().strftime("%d %b %Y, %H:%M:%S")
+    
+    return output
+
+if "session_counts" not in ss:
+    ss.session_counts = session_counts_reset()
 
 
 def reset_counts():
@@ -84,10 +110,20 @@ _orig_sidebar_color_picker = st.sidebar.color_picker
 # _orig_sidebar_toggle = st.sidebar.toggle
 # _orig_sidebar_camera_input = st.sidebar.camera_input
 
+def update_session_stats(counts: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Update the session counts with the current state.
 
-def _track_user():
-    """Track individual pageviews by storing user id to session state."""
-    #TODO: Add user id to session state
+    Parameters
+    ----------
+    counts : Dict[str, Any]
+        Counts, be they aggregate or session-specific.
+
+    Returns
+    -------
+    Dict[str, Any]
+        Updated counts with the current state of time-dependent elements.
+    """
     today = str(datetime.date.today())
     if counts["per_day"]["days"][-1] != today:
         # TODO: Insert 0 for all days between today and last entry.
@@ -103,7 +139,14 @@ def _track_user():
         st.session_state.user_tracked = True
         counts["total_pageviews"] += 1
         counts["per_day"]["pageviews"][-1] += 1
-        # print("Tracked new user")
+        
+    return counts
+
+
+def _track_user():
+    """Track individual pageviews by storing user id to session state."""
+    count = update_session_stats(counts)
+    ss.session_counts = update_session_stats(ss.session_counts)
 
 
 def _wrap_checkbox(func):
@@ -114,10 +157,19 @@ def _wrap_checkbox(func):
     def new_func(label, *args, **kwargs):
         checked = func(label, *args, **kwargs)
         label = replace_empty(label)
+        
+        # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = 0
         if checked != st.session_state.state_dict.get(label, None):
             counts["widgets"][label] += 1
+            
+        # Update session counts
+        if label not in ss.session_counts["widgets"]:
+            ss.session_counts["widgets"][label] = 0
+        if checked != st.session_state.state_dict.get(label, None):
+            ss.session_counts["widgets"][label] += 1
+            
         st.session_state.state_dict[label] = checked
         return checked
 
@@ -132,10 +184,19 @@ def _wrap_button(func):
     def new_func(label, *args, **kwargs):
         clicked = func(label, *args, **kwargs)
         label = replace_empty(label)
+        
+        # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = 0
         if clicked:
             counts["widgets"][label] += 1
+            
+        # Update session counts    
+        if label not in ss.session_counts["widgets"]:
+            ss.session_counts["widgets"][label] = 0
+        if clicked:
+            ss.session_counts["widgets"][label] += 1
+            
         st.session_state.state_dict[label] = clicked
         return clicked
 
@@ -150,6 +211,8 @@ def _wrap_file_uploader(func):
     def new_func(label, *args, **kwargs):
         uploaded_file = func(label, *args, **kwargs)
         label = replace_empty(label)
+        
+        # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = 0
         # TODO: Right now this doesn't track when multiple files are uploaded one after
@@ -158,6 +221,13 @@ def _wrap_file_uploader(func):
         #   was uploaded.
         if uploaded_file and not st.session_state.state_dict.get(label, None):
             counts["widgets"][label] += 1
+            
+        # Update session counts
+        if label not in ss.session_counts["widgets"]:
+            ss.session_counts["widgets"][label] = 0
+        if uploaded_file and not st.session_state.state_dict.get(label, None):
+            ss.session_counts["widgets"][label] += 1
+            
         st.session_state.state_dict[label] = bool(uploaded_file)
         return uploaded_file
 
@@ -174,6 +244,8 @@ def _wrap_select(func):
         orig_selected = func(label, options, *args, **kwargs)
         label = replace_empty(label)
         selected = replace_empty(orig_selected)
+        
+        # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = {}
         for option in options:
@@ -182,6 +254,17 @@ def _wrap_select(func):
                 counts["widgets"][label][option] = 0
         if selected != st.session_state.state_dict.get(label, None):
             counts["widgets"][label][selected] += 1
+            
+        # Update session counts
+        if label not in ss.session_counts["widgets"]:
+            ss.session_counts["widgets"][label] = {}
+        for option in options:
+            option = replace_empty(option)
+            if option not in ss.session_counts["widgets"][label]:
+                ss.session_counts["widgets"][label][option] = 0
+        if selected != st.session_state.state_dict.get(label, None):
+            ss.session_counts["widgets"][label][selected] += 1
+            
         st.session_state.state_dict[label] = selected
         return orig_selected
 
@@ -197,6 +280,8 @@ def _wrap_multiselect(func):
     def new_func(label, options, *args, **kwargs):
         selected = func(label, options, *args, **kwargs)
         label = replace_empty(label)
+        
+        # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = {}
         for option in options:
@@ -207,6 +292,19 @@ def _wrap_multiselect(func):
             sel = replace_empty(sel)
             if sel not in st.session_state.state_dict.get(label, []):
                 counts["widgets"][label][sel] += 1
+                
+        # Update session counts
+        if label not in ss.session_counts["widgets"]:
+            ss.session_counts["widgets"][label] = {}
+        for option in options:
+            option = replace_empty(option)
+            if option not in ss.session_counts["widgets"][label]:
+                ss.session_counts["widgets"][label][option] = 0
+        for sel in selected:
+            sel = replace_empty(sel)
+            if sel not in st.session_state.state_dict.get(label, []):
+                ss.session_counts["widgets"][label][sel] += 1
+                
         st.session_state.state_dict[label] = selected
         return selected
 
@@ -222,8 +320,14 @@ def _wrap_value(func):
 
     def new_func(label, *args, **kwargs):
         value = func(label, *args, **kwargs)
+        
+        # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = {}
+            
+        # Update session counts
+        if label not in ss.session_counts["widgets"]:
+            ss.session_counts["widgets"][label] = {}
 
         formatted_value = replace_empty(value)
         if type(value) is tuple and len(value) == 2:
@@ -240,8 +344,13 @@ def _wrap_value(func):
 
         if formatted_value not in counts["widgets"][label]:
             counts["widgets"][label][formatted_value] = 0
+        if formatted_value not in ss.session_counts["widgets"][label]:
+            ss.session_counts["widgets"][label][formatted_value] = 0
+            
         if formatted_value != st.session_state.state_dict.get(label, None):
             counts["widgets"][label][formatted_value] += 1
+            ss.session_counts["widgets"][label][formatted_value] += 1
+            
         st.session_state.state_dict[label] = formatted_value
         return value
 
@@ -257,16 +366,26 @@ def _wrap_chat_input(func):
 
     def new_func(placeholder, *args, **kwargs):
         value = func(placeholder, *args, **kwargs)
+        
+        # Update aggregate counts
         if placeholder not in counts["widgets"]:
             counts["widgets"][placeholder] = {}
+            
+        # Update session counts
+        if placeholder not in ss.session_counts["widgets"]:
+            ss.session_counts["widgets"][placeholder] = {}
 
         formatted_value = str(value)
 
         if formatted_value not in counts["widgets"][placeholder]:
             counts["widgets"][placeholder][formatted_value] = 0
+        if formatted_value not in ss.session_counts["widgets"][placeholder]:
+            ss.session_counts["widgets"][placeholder][formatted_value] = 0
 
         if formatted_value != st.session_state.state_dict.get(placeholder):
             counts["widgets"][placeholder][formatted_value] += 1
+            ss.session_counts["widgets"][placeholder][formatted_value] += 1
+            
         st.session_state.state_dict[placeholder] = formatted_value
         return value
 
@@ -280,7 +399,7 @@ def start_tracking(
     load_from_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
     firestore_project_name: Optional[str] = None,
-    session_id: str = "counts",
+    session_id: Optional[str] = None,
 ):
     """
     Start tracking user inputs to a streamlit app.
@@ -290,6 +409,9 @@ def start_tracking(
     For a more convenient interface, wrap your streamlit calls in
     `with streamlit_analytics.track():`.
     """
+    # Set to aggregate/general "counts" when no session_id provided
+    if session_id is None:
+        session_id = "counts"
 
     if (
         streamlit_secrets_firestore_key is not None
@@ -432,7 +554,7 @@ def stop_tracking(
     load_from_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
     firestore_project_name: Optional[str] = None,
-    session_id: str = "counts",
+    session_id: Optional[str] = None,
 ):
     """
     Stop tracking user inputs to a streamlit app.
@@ -440,6 +562,9 @@ def stop_tracking(
     Should be called after `streamlit-analytics.start_tracking()`. This method also
     shows the analytics results below your app if you attach `?analytics=on` to the URL.
     """
+    # Set to aggregate/general "counts" when no session_id provided
+    if session_id is None:
+        session_id = "counts"
 
     if verbose:
         logging.info("SA2: Finished script execution. New counts:")
@@ -565,7 +690,7 @@ def track(
     load_from_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
     firestore_project_name: Optional[str] = None,
-    session_id: str = "counts",
+    session_id: Optional[str] = None,
 ):
     """
     Context manager to start and stop tracking user inputs to a streamlit app.

@@ -22,8 +22,12 @@ def load(
     collection_name,
     streamlit_secrets_firestore_key,
     firestore_project_name,
-    session_id = "counts",
+    session_id = None,
 ):
+    # Set to aggregate/general "counts" when no session_id provided
+    if session_id is None:
+        session_id = "counts"
+
     """Load count data from firestore into `counts`."""
     if streamlit_secrets_firestore_key is not None:
         # Following along here
@@ -53,9 +57,13 @@ def save(
     collection_name,
     streamlit_secrets_firestore_key,
     firestore_project_name,
-    session_id = "counts",
+    session_id = None,
 ):
     """Save count data from `counts` to firestore."""
+    # Set to aggregate/general "counts" when no session_id provided
+    if session_id is None:
+        session_id = "counts"
+    
     # Ensure all keys are strings and not empty
     sanitized_counts = sanitize_data(counts)
 
