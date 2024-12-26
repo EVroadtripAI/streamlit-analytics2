@@ -7,57 +7,34 @@ on:
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
-      
-      - name: Debug environment
-        run: |
-          pwd
-          python --version
-          pip --version
-          ls -la
-      
       - name: Install and configure uv
         run: |
           pip install uv
           uv venv
           source .venv/bin/activate
           uv pip install build hatchling twine
-      
       - name: Build and check package
         run: |
           source .venv/bin/activate
-          # Clean any previous builds
           rm -rf dist/ build/ src/*.egg-info/
-          # Show environment
-          echo "=== Python path ==="
-          which python
-          echo "=== Working directory ==="
-          pwd
-          ls -la
-          # Build
           python -m build
-          echo "=== Dist contents ==="
-          ls -la dist/
-          echo "=== Wheel contents ==="
-          unzip -l dist/*.whl
-          echo "=== Metadata check ==="
           twine check dist/*
-      
       - name: Upload to TestPyPI
         if: contains(github.ref, 'refs/heads/test/')
-        uses: pypa/gh-action-pypi-publish@v1.8.11
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
           verify-metadata: true
           skip-existing: true
-          verbose: true
