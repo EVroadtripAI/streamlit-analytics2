@@ -31,10 +31,18 @@ jobs:
           rm -rf dist/ build/ src/*.egg-info/
           python -m build
           twine check dist/*
+
       - name: Upload to TestPyPI
         if: contains(github.ref, 'refs/heads/test/')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
+          verify-metadata: true
+          skip-existing: true
+          
+      - name: Upload to PyPI
+        if: github.ref == 'refs/heads/main'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
           verify-metadata: true
           skip-existing: true

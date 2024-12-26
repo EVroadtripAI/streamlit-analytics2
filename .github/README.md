@@ -11,7 +11,7 @@
 
 **Enhanced tracking & visualization for your Streamlit apps.**
 
-Streamlit Analytics2 is maintained, powerful tool for tracking user interactions and gathering insights from your Streamlit applications. With just a few lines of code, you can start monitoring user behavior and making data-driven decisions to improve your app.
+Streamlit Analytics2 is a maintained, powerful tool for tracking user interactions and gathering insights from your Streamlit applications. With just a few lines of code, you can start monitoring user behavior and making data-driven decisions to improve your app.
 
 > [!Note]
 > This fork is confirmed to fix the deprecation ```st.experimental_get_query_params``` alerts.    [Context](https://docs.streamlit.io/library/api-reference/utilities/st.experimental_get_query_params)  
@@ -27,17 +27,19 @@ Streamlit Analytics2 is maintained, powerful tool for tracking user interactions
 
 2. Import and initialize the tracker in your Streamlit script:
    ```python
-   from streamlit_analytics2 import track
-   
-   with track():
-       # Your Streamlit app code here
+   import streamlit as st
+   import streamlit_analytics2 as streamlit_analytics
+
+   with streamlit_analytics.track():
+      st.write("Hello, World!")
+      st.button("Click me")
    ```
 
 3. Run your Streamlit app and append `?analytics=on` to the URL to view the analytics dashboard.
 
 ## Contributing
 
-We're actively seeking additional maintainers to help improve Streamlit Analytics2. If you're interested in contributing, please check out our [Contributing Guidelines](CONTRIBUTING.md) to get started. We welcome pull requests, bug reports, feature requests, and any other feedback.
+We're actively seeking additional maintainers to help improve Streamlit Analytics2. If you're interested in contributing, please check out our [Contributing Guidelines](.github/CONTRIBUTING.md) to get started. We welcome pull requests, bug reports, feature requests, and any other feedback.
 
 
 ## Upcoming Features
@@ -49,7 +51,7 @@ We're currently working on a major breaking release that will introduce exciting
 - Flexible data formats: Choose between CSV or JSON for storing and exporting analytics data.
 - Customization screen: Easily configure and customize the analytics settings through a user-friendly interface.
 
-Stay tuned for more updates and join our community to be part of shaping the future of Streamlit Analytics2!
+Stay tuned for more updates and join our [community](https://github.com/444B/streamlit-analytics2/discussions) to be part of shaping the future of Streamlit Analytics2!
 
 ## License
 
