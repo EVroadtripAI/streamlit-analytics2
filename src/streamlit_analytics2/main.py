@@ -87,6 +87,7 @@ _orig_sidebar_color_picker = st.sidebar.color_picker
 
 def _track_user():
     """Track individual pageviews by storing user id to session state."""
+    #TODO: Add user id to session state
     today = str(datetime.date.today())
     if counts["per_day"]["days"][-1] != today:
         # TODO: Insert 0 for all days between today and last entry.
@@ -279,6 +280,7 @@ def start_tracking(
     load_from_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
     firestore_project_name: Optional[str] = None,
+    session_id: str = "counts",
 ):
     """
     Start tracking user inputs to a streamlit app.
@@ -299,6 +301,7 @@ def start_tracking(
             collection_name=firestore_collection_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
+            session_id=session_id,
         )
         counts["loaded_from_firestore"] = True
         if verbose:
@@ -313,6 +316,7 @@ def start_tracking(
             firestore_collection_name,
             streamlit_secrets_firestore_key=None,
             firestore_project_name=None,
+            session_id=session_id,
         )
         counts["loaded_from_firestore"] = True
         if verbose:
@@ -428,6 +432,7 @@ def stop_tracking(
     load_from_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
     firestore_project_name: Optional[str] = None,
+    session_id: str = "counts",
 ):
     """
     Stop tracking user inputs to a streamlit app.
@@ -504,6 +509,7 @@ def stop_tracking(
             collection_name=firestore_collection_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
+            session_id=session_id,
         )
 
     elif (
@@ -521,6 +527,7 @@ def stop_tracking(
             firestore_collection_name,
             streamlit_secrets_firestore_key=None,
             firestore_project_name=None,
+            session_id=session_id,
         )
 
     # Dump the counts to json file if `save_to_json` is set.
@@ -558,6 +565,7 @@ def track(
     load_from_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
     firestore_project_name: Optional[str] = None,
+    session_id: str = "counts",
 ):
     """
     Context manager to start and stop tracking user inputs to a streamlit app.
@@ -575,6 +583,7 @@ def track(
             firestore_collection_name=firestore_collection_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
+            session_id=session_id,
         )
 
     else:
@@ -583,6 +592,7 @@ def track(
             firestore_key_file=firestore_key_file,
             firestore_collection_name=firestore_collection_name,
             load_from_json=load_from_json,
+            session_id=session_id,
         )
     # Yield here to execute the code in the with statement. This will call the wrappers
     # above, which track all inputs.
@@ -596,6 +606,7 @@ def track(
             firestore_collection_name=firestore_collection_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
+            session_id=session_id,
             verbose=verbose,
         )
     else:
@@ -605,4 +616,5 @@ def track(
             firestore_key_file=firestore_key_file,
             firestore_collection_name=firestore_collection_name,
             verbose=verbose,
+            session_id=session_id,
         )

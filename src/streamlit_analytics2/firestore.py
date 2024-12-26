@@ -22,6 +22,7 @@ def load(
     collection_name,
     streamlit_secrets_firestore_key,
     firestore_project_name,
+    session_id = "counts",
 ):
     """Load count data from firestore into `counts`."""
     if streamlit_secrets_firestore_key is not None:
@@ -31,11 +32,11 @@ def load(
         creds = service_account.Credentials.from_service_account_info(key_dict)
         db = firestore.Client(credentials=creds, project=firestore_project_name)
         col = db.collection(collection_name)
-        firestore_counts = col.document("counts").get().to_dict()
+        firestore_counts = col.document(session_id).get().to_dict()
     else:
         db = firestore.Client.from_service_account_json(service_account_json)
         col = db.collection(collection_name)
-        firestore_counts = col.document("counts").get().to_dict()
+        firestore_counts = col.document(session_id).get().to_dict()
 
     if firestore_counts is not None:
         for key in firestore_counts:
@@ -52,6 +53,7 @@ def save(
     collection_name,
     streamlit_secrets_firestore_key,
     firestore_project_name,
+    session_id = "counts",
 ):
     """Save count data from `counts` to firestore."""
     # Ensure all keys are strings and not empty
@@ -65,7 +67,7 @@ def save(
     else:
         db = firestore.Client.from_service_account_json(service_account_json)
     col = db.collection(collection_name)
-    doc = col.document("counts")
+    doc = col.document(session_id)
     # TODO pass user set argument via config screen for the name of document
     # currently hard coded to be "counts"
 
