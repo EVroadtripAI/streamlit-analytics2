@@ -1,77 +1,48 @@
 name: Build and Publish
-
 on:
   push:
     branches:
       - 'main'
       - 'test/**'
-
 jobs:
-  # code-quality-check:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-    
-  #   - name: Set up Python
-  #     uses: actions/setup-python@v2
-  #     with:
-  #       python-version: '3.10'
-
-  #   - name: Install Pipenv and dependencies
-  #     run: |
-  #       pip install pipenv
-  #       pipenv install --dev --deploy
-
-  #   - name: Check code formatting with Black
-  #     run: pipenv run black src/ --check
-  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
-
-  #   - name: Sort imports with isort
-  #     run: pipenv run isort src/ --check-only --verbose --diff
-  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
-
-  #   - name: Lint with Flake8
-  #     run: pipenv run flake8 src/ --ignore=E501,W503
-  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
-
-  #   - name: Static type check with mypy
-  #     run: pipenv run mypy src/ --config-file mypy.ini
-  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
-
-  #   - name: Check for security issues with bandit
-  #     run: pipenv run bandit -r src/
-  #     continue-on-error: ${{ github.ref != 'refs/heads/main' }}
-
   build-and-upload:
-    # needs: code-quality-check
     runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install and configure uv
+        run: |
+          pip install uv
+          uv venv
+          source .venv/bin/activate
+          uv pip install build hatchling twine
+      - name: Build and check package
+        run: |
+          source .venv/bin/activate
+          rm -rf dist/ build/ src/*.egg-info/
+          python -m build
+          twine check dist/*
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.10'
-
-    - name: Install Pipenv and dependencies
-      run: |
-        pip install pipenv
-        pipenv install --dev --deploy
-
-    - name: Build package
-      run: pipenv run python -m build
-
-    - name: Upload to TestPyPI
-      if: contains(github.ref, 'refs/heads/test/')
-      uses: pypa/gh-action-pypi-publish@v1.4.2
-      with:
-        user: __token__
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
-
-    - name: Upload to PyPI
-      if: github.ref == 'refs/heads/main'
-      uses: pypa/gh-action-pypi-publish@v1.4.2
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Upload to TestPyPI
+        if: contains(github.ref, 'refs/heads/test/')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          verify-metadata: true
+          skip-existing: true
+          
+      - name: Upload to PyPI
+        if: github.ref == 'refs/heads/main'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verify-metadata: true
+          skip-existing: true

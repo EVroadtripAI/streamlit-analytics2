@@ -1,10 +1,12 @@
-# This is the file to test all the features in streanlit-analytics2
+# This is the file to test all the features in streamlit-analytics2
 # When making code changes or refactoring, this is the current main way of
 # catching breaking changes
-# In time, we will use Streamlits AppTest framework 
+# In time, we will use Streamlits AppTest framework
 
 import streamlit as st
+
 import streamlit_analytics2 as streamlit_analytics
+
 
 # Example functions for each test
 def test_all_widgets():
@@ -47,24 +49,37 @@ def test_all_widgets():
 
 
 def test_password_protection():
-    with streamlit_analytics.track(verbose=True, unsafe_password=st.secrets["unsafe_password"]):
-        st.markdown("""
+    with streamlit_analytics.track(
+        verbose=True, unsafe_password=st.secrets["unsafe_password"]
+    ):
+        st.markdown(
+            """
         Testing password protection.... Please enter '?analytics=on' after the URL   
         There should already be a Key and Value for each widget in Firebase.
-        """)
-
+        """
+        )
 
 
 def test_firebase_storage():
-    with streamlit_analytics.track(verbose=True, firestore_key_file="firebase-key.json", firestore_collection_name="streamlit-analytics2"):
+    with streamlit_analytics.track(
+        verbose=True,
+        firestore_key_file="firebase-key.json",
+        firestore_collection_name="streamlit-analytics2",
+    ):
         st.write("You should see this in your firebase dashboard")
         st.button("Click Me!")
 
 
 def test_firebase_storage_with_st_secret():
-    with streamlit_analytics.track(verbose=True, streamlit_secrets_firestore_key="firebase_key", firestore_project_name=st.secrets["project_name"], firestore_collection_name=st.secrets["collection_secret"]):
+    with streamlit_analytics.track(
+        verbose=True,
+        streamlit_secrets_firestore_key="firebase_key",
+        firestore_project_name=st.secrets["project_name"],
+        firestore_collection_name=st.secrets["collection_secret"],
+    ):
         st.write("You should see this in your firebase dashboard")
         st.button("Click Me!")
+
 
 def test_analytics_track_local_json_storing():
     # requires additional testing to ensure error handling
@@ -82,21 +97,27 @@ def test_analytics_track_local_json_loading():
 
 # Dropdown menu for selecting the test
 option = st.selectbox(
-    'Select the functionality to test:',
-    ('Test All Widgets', 'Password Protection',  'Firebase Storage', 'Firebase st.secret use',
-     'Analytics Track Local JSON Storing', 'Analytics Track Local JSON Loading')
+    "Select the functionality to test:",
+    (
+        "Test All Widgets",
+        "Password Protection",
+        "Firebase Storage",
+        "Firebase st.secret use",
+        "Analytics Track Local JSON Storing",
+        "Analytics Track Local JSON Loading",
+    ),
 )
 
 # Execute the selected option
-if option == 'Test All Widgets':
+if option == "Test All Widgets":
     test_all_widgets()
-elif option == 'Password Protection':
+elif option == "Password Protection":
     test_password_protection()
-elif option == 'Firebase Storage':
+elif option == "Firebase Storage":
     test_firebase_storage()
-elif option == 'Firebase st.secret use':
+elif option == "Firebase st.secret use":
     test_firebase_storage_with_st_secret()
-elif option == 'Analytics Track Local JSON Storing':
+elif option == "Analytics Track Local JSON Storing":
     test_analytics_track_local_json_storing()
-elif option == 'Analytics Track Local JSON Loading':
+elif option == "Analytics Track Local JSON Loading":
     test_analytics_track_local_json_loading()

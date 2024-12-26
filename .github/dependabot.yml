@@ -1,11 +1,38 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-
 version: 2
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "pip"
+    directory: "/"
     schedule:
       interval: "weekly"
+    # Add these recommended settings
+    allow:
+      # Only handle production dependencies by default
+      - dependency-type: "production"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Group updates together
+    groups:
+      dev-dependencies:
+        patterns:
+          - "black"
+          - "isort"
+          - "flake8"
+          - "mypy"
+          - "bandit"
+          - "pytest*"
+      production-dependencies:
+        patterns:
+          - "streamlit"
+          - "pandas"
+          - "altair"
+          - "google-cloud-firestore"
+    # Specify target branch
+    target-branch: "main"
+    # Set reviewers for the PRs
+    reviewers:
+      - "444B"
+    # Labels for PRs
+    labels:
+      - "dependencies"
+      - "automated"
