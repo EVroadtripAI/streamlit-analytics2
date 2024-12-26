@@ -10,6 +10,36 @@ NO_COLOR='\033[0m'
 # Exit on undefined variables and pipe failures
 set -uo pipefail
 
+# Help function
+show_help() {
+    echo "Usage: ./run_checks.sh [--fix]"
+    echo ""
+    echo "Options:"
+    echo "  --help    Show this help message"
+    echo "  --fix     Run formatters and linters in fix mode"
+    echo ""
+    echo "Without options, runs in check-only mode"
+    exit 0
+}
+
+# Parse arguments
+FIX_MODE=false
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --help)
+            show_help
+            ;;
+        --fix)
+            FIX_MODE=true
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            show_help
+            ;;
+    esac
+done
+
 # Function to print formatted section headers
 print_section() {
     echo -e "\n${BLUE}=== $1 ===${NO_COLOR}"
@@ -47,6 +77,7 @@ error_log="errors_$timestamp.tmp"
 {
     echo "# Code Quality Check Results"
     echo "Run on: $(date)"
+    echo "Mode: $([ "$FIX_MODE" = true ] && echo 'Fix' || echo 'Check')"
     echo ""
     echo '```text'
 } > "$filename"
@@ -70,8 +101,13 @@ fi
 # Run all checks
 {
     # Format checks
-    run_check "black ${SRC_DIR} --check --verbose" "Black formatting" || any_failures=1
-    run_check "isort ${SRC_DIR} --check-only --verbose --diff" "Import sorting" || any_failures=1
+    if [ "$FIX_MODE" = true ]; then
+        run_check "black ${SRC_DIR}" "Black formatting" || any_failures=1
+        run_check "isort ${SRC_DIR}" "Import sorting" || any_failures=1
+    else
+        run_check "black ${SRC_DIR} --check --verbose" "Black formatting" || any_failures=1
+        run_check "isort ${SRC_DIR} --check-only --verbose --diff" "Import sorting" || any_failures=1
+    fi
     
     # Lint checks
     run_check "flake8 ${SRC_DIR}" "Flake8 linting" || any_failures=1
@@ -91,6 +127,9 @@ fi
         echo -e "${GREEN}✨ All checks passed! Ready for production.${NO_COLOR}"
     else
         echo -e "${RED}❌ Some checks failed. Please review the log for details.${NO_COLOR}"
+        if [ "$bla" = false ]; then
+            echo -e "${YELLOW}Try running with --fix to automatically fix formatting issues${NO_COLOR}"
+        fi
     fi
 } 2>&1 | tee -a "$filename"
 
