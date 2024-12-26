@@ -1,8 +1,13 @@
 import json
 
 import streamlit as st
+from streamlit import session_state as ss
 from google.cloud import firestore
 from google.oauth2 import service_account
+from .utils import session_counts_reset
+
+if "session_counts" not in ss:
+    ss.session_counts = session_counts_reset()
 
 
 def sanitize_data(data):
@@ -24,9 +29,6 @@ def load(
     firestore_project_name,
     session_id = None,
 ):
-    # Set to aggregate/general "counts" when no session_id provided
-    if session_id is None:
-        session_id = "counts"
 
     """Load count data from firestore into `counts`."""
     if streamlit_secrets_firestore_key is not None:
@@ -36,16 +38,25 @@ def load(
         creds = service_account.Credentials.from_service_account_info(key_dict)
         db = firestore.Client(credentials=creds, project=firestore_project_name)
         col = db.collection(collection_name)
-        firestore_counts = col.document(session_id).get().to_dict()
+        firestore_counts = col.document("counts").get().to_dict()
+        if session_id is not None:
+            firestore_session_counts = col.document(session_id).get().to_dict()
     else:
         db = firestore.Client.from_service_account_json(service_account_json)
         col = db.collection(collection_name)
-        firestore_counts = col.document(session_id).get().to_dict()
-
+        firestore_counts = col.document("counts").get().to_dict()
+        if session_id is not None:
+            firestore_session_counts = col.document(session_id).get().to_dict()
+        
     if firestore_counts is not None:
         for key in firestore_counts:
             if key in counts:
                 counts[key] = firestore_counts[key]
+                
+    if firestore_session_counts is not None:
+        for key in firestore_session_counts:
+            if key in ss.session_counts:
+                ss.session_counts[key] = firestore_session_counts[key]
 
     # Log loaded data for debugging
     # logging.debug("Data loaded from Firestore: %s", firestore_counts)
@@ -60,9 +71,6 @@ def save(
     session_id = None,
 ):
     """Save count data from `counts` to firestore."""
-    # Set to aggregate/general "counts" when no session_id provided
-    if session_id is None:
-        session_id = "counts"
     
     # Ensure all keys are strings and not empty
     sanitized_counts = sanitize_data(counts)
@@ -75,7 +83,6 @@ def save(
     else:
         db = firestore.Client.from_service_account_json(service_account_json)
     col = db.collection(collection_name)
-    doc = col.document(session_id)
     # TODO pass user set argument via config screen for the name of document
     # currently hard coded to be "counts"
 
@@ -83,4 +90,7 @@ def save(
     # logging.debug("Data being saved to Firestore: %s", sanitized_counts)
 
     # Attempt to save to Firestore
-    doc.set(sanitized_counts)  # creates if doesn't exist
+    col.document("counts").set(sanitized_counts)  # creates if doesn't exist
+    if session_id is not None:
+        sanitized_session_counts = sanitize_data(ss.session_counts)
+        col.document(session_id).set(sanitized_session_counts)  # creates if doesn't exist

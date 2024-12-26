@@ -13,7 +13,7 @@ import streamlit as st
 from streamlit import session_state as ss
 
 from . import display, firestore
-from .utils import replace_empty
+from .utils import replace_empty, session_counts_reset
 
 # logging.basicConfig(
 #     level=logging.INFO, format="streamlit-analytics2: %(levelname)s: %(message)s"
@@ -26,27 +26,6 @@ counts = {"loaded_from_firestore": False}
 
 logging.info("SA2: Streamlit-analytics2 successfully imported")
 
-
-def session_counts_reset() -> Dict[str, Any]:
-    """
-    Reset the session counts to a new session.
-
-    Returns
-    -------
-    Dict[str, Any]
-        The new session counts.
-    """
-    # Use yesterday as first entry to make chart look better.
-    yesterday = str(datetime.date.today() - datetime.timedelta(days=1))
-    output = {}
-    output["total_pageviews"] = 0
-    output["total_script_runs"] = 0
-    output["total_time_seconds"] = 0
-    output["per_day"] = {"days": [str(yesterday)], "pageviews": [0], "script_runs": [0]}
-    output["widgets"] = {}
-    output["start_time"] = datetime.datetime.now().strftime("%d %b %Y, %H:%M:%S")
-    
-    return output
 
 if "session_counts" not in ss:
     ss.session_counts = session_counts_reset()
