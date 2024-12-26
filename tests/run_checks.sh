@@ -19,7 +19,6 @@ print_section() {
 run_check() {
     local cmd="$1"
     local name="$2"
-    
     print_section "Running $name"
     if eval "$cmd" 2>&1 | tee -a "$error_log"; then
         echo -e "${GREEN}✓ $name passed${NO_COLOR}"
@@ -35,6 +34,9 @@ if [ ! -f "run_checks.sh" ]; then
     echo -e "${RED}Error: Please run this script from the tests directory${NO_COLOR}"
     exit 1
 fi
+
+# Define source directory
+SRC_DIR="../src/streamlit_analytics2"
 
 # Generate timestamp and filenames
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
@@ -68,21 +70,21 @@ fi
 # Run all checks
 {
     # Format checks
-    run_check "black ../src --check --verbose" "Black formatting" || any_failures=1
-    run_check "isort ../src --check-only --verbose --diff" "Import sorting" || any_failures=1
+    run_check "black ${SRC_DIR} --check --verbose" "Black formatting" || any_failures=1
+    run_check "isort ${SRC_DIR} --check-only --verbose --diff" "Import sorting" || any_failures=1
     
     # Lint checks
-    run_check "flake8 ../src" "Flake8 linting" || any_failures=1
+    run_check "flake8 ${SRC_DIR}" "Flake8 linting" || any_failures=1
     
     # Type checks
-    run_check "mypy ../src --config-file ../mypy.ini" "MyPy type checking" || any_failures=1
+    run_check "mypy ${SRC_DIR} --config-file ../mypy.ini" "MyPy type checking" || any_failures=1
     
     # Security checks
-    run_check "bandit -r ../src" "Bandit security check" || any_failures=1
+    run_check "bandit -r ${SRC_DIR}" "Bandit security check" || any_failures=1
     
-    # Tests
-    run_check "pytest ../ --cov=src --cov-report=term-missing" "Pytest with coverage" || any_failures=1
-    
+    # Tests with coverage
+    run_check "pytest ../ --cov=${SRC_DIR} --cov-report=term-missing" "Pytest with coverage" || any_failures=1
+
     # Summary
     echo -e "\n=== Summary ==="
     if [ $any_failures -eq 0 ]; then

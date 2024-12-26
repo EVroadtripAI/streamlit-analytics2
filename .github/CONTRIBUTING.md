@@ -31,7 +31,7 @@ streamlit run examples/minimal.py
 ## Quality Checks
 ```sh
 cd tests/
-chmod +x /run_checks.sh
+chmod +x run_checks.sh
 ./run_check.sh
 ```
 
