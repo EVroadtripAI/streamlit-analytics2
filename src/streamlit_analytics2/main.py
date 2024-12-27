@@ -11,7 +11,7 @@ from typing import Optional, Union, Dict, Any
 
 import streamlit as st
 from streamlit import session_state as ss
-import streamlit_searchbox
+from streamlit_searchbox import st_searchbox
 
 from . import display, firestore
 from .utils import replace_empty, initialize_session_counts
@@ -63,7 +63,7 @@ _orig_color_picker = st.color_picker
 # _orig_toggle = st.toggle
 # _orig_camera_input = st.camera_input
 _orig_chat_input = st.chat_input
-_orig_searchbox = streamlit_searchbox
+_orig_searchbox = st_searchbox
 
 
 _orig_sidebar_button = st.sidebar.button
@@ -80,7 +80,7 @@ _orig_sidebar_date_input = st.sidebar.date_input
 _orig_sidebar_time_input = st.sidebar.time_input
 _orig_sidebar_file_uploader = st.sidebar.file_uploader
 _orig_sidebar_color_picker = st.sidebar.color_picker
-_orig_sidebar_searchbox = st.sidebar.streamlit_searchbox
+_orig_sidebar_searchbox = st.sidebar.st_searchbox
 # new elements, testing
 # _orig_sidebar_download_button = st.sidebar.download_button
 # _orig_sidebar_link_button = st.sidebar.link_button
@@ -289,7 +289,7 @@ def _wrap_multiselect(func):
 
 def _wrap_searchbox(func):
     """
-    Wrap streamlit_searchbox function that returns a selected value from search suggestions.
+    Wrap st_searchbox function that returns a selected value from search suggestions.
     """
     def new_func(search_function, *args, **kwargs):
         value = func(search_function, *args, **kwargs)
@@ -513,7 +513,7 @@ def start_tracking(
     # st.toggle = _wrap_value(_orig_toggle)
     # st.camera_input = _wrap_value(_orig_camera_input)
     st.chat_input = _wrap_chat_input(_orig_chat_input)
-    streamlit_searchbox = _wrap_searchbox(_orig_searchbox)
+    st_searchbox = _wrap_searchbox(_orig_searchbox)
 
     st.sidebar.button = _wrap_button(_orig_sidebar_button)  # type: ignore
     st.sidebar.checkbox = _wrap_checkbox(_orig_sidebar_checkbox)  # type: ignore
@@ -529,7 +529,7 @@ def start_tracking(
     st.sidebar.time_input = _wrap_value(_orig_sidebar_time_input)  # type: ignore
     st.sidebar.file_uploader = _wrap_file_uploader(_orig_sidebar_file_uploader)  # type: ignore
     st.sidebar.color_picker = _wrap_value(_orig_sidebar_color_picker)  # type: ignore
-    st.sidebar.streamlit_searchbox = _wrap_searchbox(_orig_sidebar_searchbox)  # type: ignore
+    st.sidebar.st_searchbox = _wrap_searchbox(_orig_sidebar_searchbox)  # type: ignore
     
     # new elements, testing
     # st.sidebar.download_button = _wrap_value(_orig_sidebar_download_button)
