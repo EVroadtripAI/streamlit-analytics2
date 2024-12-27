@@ -10,6 +10,7 @@ pandas = "*"
 google-cloud-firestore = "*"
 streamlit-analytics2 = {editable = true, path = "."}
 typing_extensions = "*"
+streamlit-searchbox = "*"
 
 [dev-packages]
 black = "*"

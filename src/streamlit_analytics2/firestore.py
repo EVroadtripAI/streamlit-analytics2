@@ -4,10 +4,6 @@ import streamlit as st
 from streamlit import session_state as ss
 from google.cloud import firestore
 from google.oauth2 import service_account
-from .utils import session_counts_reset
-
-if "session_counts" not in ss:
-    ss.session_counts = session_counts_reset()
 
 
 def sanitize_data(data):
@@ -29,7 +25,6 @@ def load(
     firestore_project_name,
     session_id = None,
 ):
-
     """Load count data from firestore into `counts`."""
     if streamlit_secrets_firestore_key is not None:
         # Following along here

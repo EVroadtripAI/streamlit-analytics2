@@ -1,5 +1,6 @@
 import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional
+from streamlit import session_state as ss
 
 
 def format_seconds(s: int) -> str:
@@ -52,3 +53,11 @@ def session_counts_reset() -> Dict[str, Any]:
     output["start_time"] = datetime.datetime.now().strftime("%d %b %Y, %H:%M:%S")
     
     return output
+
+
+def initialize_session_counts():
+    """
+    Initialize the session counts if not already initialized.
+    """
+    if "session_counts" not in ss:
+        ss.session_counts = session_counts_reset()
