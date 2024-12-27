@@ -11,7 +11,7 @@ from typing import Optional, Union, Dict, Any
 
 import streamlit as st
 from streamlit import session_state as ss
-from streamlit_searchbox import st_searchbox
+# from streamlit_searchbox import st_searchbox
 
 from . import display, firestore
 from .utils import replace_empty, initialize_session_counts
@@ -63,7 +63,7 @@ _orig_color_picker = st.color_picker
 # _orig_toggle = st.toggle
 # _orig_camera_input = st.camera_input
 _orig_chat_input = st.chat_input
-_orig_searchbox = st_searchbox
+# _orig_searchbox = st_searchbox
 
 
 _orig_sidebar_button = st.sidebar.button
@@ -80,7 +80,7 @@ _orig_sidebar_date_input = st.sidebar.date_input
 _orig_sidebar_time_input = st.sidebar.time_input
 _orig_sidebar_file_uploader = st.sidebar.file_uploader
 _orig_sidebar_color_picker = st.sidebar.color_picker
-_orig_sidebar_searchbox = st.sidebar.st_searchbox
+# _orig_sidebar_searchbox = st.sidebar.st_searchbox
 # new elements, testing
 # _orig_sidebar_download_button = st.sidebar.download_button
 # _orig_sidebar_link_button = st.sidebar.link_button
@@ -287,40 +287,40 @@ def _wrap_multiselect(func):
     return new_func
 
 
-def _wrap_searchbox(func):
-    """
-    Wrap st_searchbox function that returns a selected value from search suggestions.
-    """
-    def new_func(search_function, *args, **kwargs):
-        value = func(search_function, *args, **kwargs)
+# def _wrap_searchbox(func):
+#     """
+#     Wrap st_searchbox function that returns a selected value from search suggestions.
+#     """
+#     def new_func(search_function, *args, **kwargs):
+#         value = func(search_function, *args, **kwargs)
         
-        # Get label from kwargs or use default
-        label = kwargs.get('label', 'searchbox')
-        label = replace_empty(label)
+#         # Get label from kwargs or use default
+#         label = kwargs.get('label', 'searchbox')
+#         label = replace_empty(label)
         
-        # Update aggregate counts
-        if label not in counts["widgets"]:
-            counts["widgets"][label] = {}
+#         # Update aggregate counts
+#         if label not in counts["widgets"]:
+#             counts["widgets"][label] = {}
             
-        # Update session counts
-        if label not in ss.session_counts["widgets"]:
-            ss.session_counts["widgets"][label] = {}
+#         # Update session counts
+#         if label not in ss.session_counts["widgets"]:
+#             ss.session_counts["widgets"][label] = {}
 
-        formatted_value = replace_empty(value)
+#         formatted_value = replace_empty(value)
 
-        if formatted_value not in counts["widgets"][label]:
-            counts["widgets"][label][formatted_value] = 0
-        if formatted_value not in ss.session_counts["widgets"][label]:
-            ss.session_counts["widgets"][label][formatted_value] = 0
+#         if formatted_value not in counts["widgets"][label]:
+#             counts["widgets"][label][formatted_value] = 0
+#         if formatted_value not in ss.session_counts["widgets"][label]:
+#             ss.session_counts["widgets"][label][formatted_value] = 0
             
-        if formatted_value != st.session_state.state_dict.get(label, None):
-            counts["widgets"][label][formatted_value] += 1
-            ss.session_counts["widgets"][label][formatted_value] += 1
+#         if formatted_value != st.session_state.state_dict.get(label, None):
+#             counts["widgets"][label][formatted_value] += 1
+#             ss.session_counts["widgets"][label][formatted_value] += 1
             
-        st.session_state.state_dict[label] = formatted_value
-        return value
+#         st.session_state.state_dict[label] = formatted_value
+#         return value
 
-    return new_func
+#     return new_func
 
 
 
@@ -513,7 +513,7 @@ def start_tracking(
     # st.toggle = _wrap_value(_orig_toggle)
     # st.camera_input = _wrap_value(_orig_camera_input)
     st.chat_input = _wrap_chat_input(_orig_chat_input)
-    st_searchbox = _wrap_searchbox(_orig_searchbox)
+    # st_searchbox = _wrap_searchbox(_orig_searchbox)
 
     st.sidebar.button = _wrap_button(_orig_sidebar_button)  # type: ignore
     st.sidebar.checkbox = _wrap_checkbox(_orig_sidebar_checkbox)  # type: ignore
@@ -529,7 +529,7 @@ def start_tracking(
     st.sidebar.time_input = _wrap_value(_orig_sidebar_time_input)  # type: ignore
     st.sidebar.file_uploader = _wrap_file_uploader(_orig_sidebar_file_uploader)  # type: ignore
     st.sidebar.color_picker = _wrap_value(_orig_sidebar_color_picker)  # type: ignore
-    st.sidebar.st_searchbox = _wrap_searchbox(_orig_sidebar_searchbox)  # type: ignore
+    # st.sidebar.st_searchbox = _wrap_searchbox(_orig_sidebar_searchbox)  # type: ignore
     
     # new elements, testing
     # st.sidebar.download_button = _wrap_value(_orig_sidebar_download_button)
@@ -606,7 +606,7 @@ def stop_tracking(
     # st.toggle = _orig_toggle
     # st.camera_input = _orig_camera_input
     st.chat_input = _orig_chat_input
-
+    # st.searchbox = _orig_searchbox
     st.sidebar.button = _orig_sidebar_button  # type: ignore
     st.sidebar.checkbox = _orig_sidebar_checkbox  # type: ignore
     st.sidebar.radio = _orig_sidebar_radio  # type: ignore
@@ -627,7 +627,7 @@ def stop_tracking(
     # st.sidebar.page_link = _orig_sidebar_page_link
     # st.sidebar.toggle = _orig_sidebar_toggle
     # st.sidebar.camera_input = _orig_sidebar_camera_input
-
+    # st.sidebar.searchbox = _orig_sidebar_searchbox
     # Save count data to firestore.
     # TODO: Maybe don't save on every iteration but on regular intervals in a background
     #   thread.
