@@ -67,6 +67,22 @@ def main():
 ```
 Using streamlit_analytics.track() is the recommended method and will become the primary way to initiate streamlit-analytics2 after the [upcoming v.1.0.0](https://github.com/444B/streamlit-analytics2/issues/53) release.
 
+### Session-Level Analytics
+
+We have added a new feature to track session-level analytics. The default behavior of tracking across all sessions of your app is still supported, but now we also enable tracking at the individual session level as well. To do this, simply add a string representing a unique session ID to the track() function (recommended to be a UUID4):
+
+```python
+import streamlit as st
+import streamlit_analytics2 as streamlit_analytics
+
+with streamlit_analytics.track(session_id="1234567890"):
+    main()
+
+def main():
+    st.write("Hello, World!")
+    st.button("Click me")
+```
+
 ## Moving Forward
 
 - **TODOs and Feature Requests**: We've transitioned our roadmap and feature requests to [GitHub Issues](https://github.com/your-repo/streamlit-analytics2/issues). Feel free to contribute ideas or report bugs!  
