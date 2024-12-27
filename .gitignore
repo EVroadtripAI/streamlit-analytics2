@@ -2,6 +2,8 @@ firestore-key.json
 results.json
 .vscode
 streamlit_analytics/playground.ipynb
+.key
+test_results*.tmp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

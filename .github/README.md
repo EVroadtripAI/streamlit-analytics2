@@ -11,61 +11,33 @@
 
 **Enhanced tracking & visualization for your Streamlit apps.**
 
-`streamlit-analytics2` is a fork and extension of the original [streamlit-analytics](https://github.com/jrieke/streamlit-analytics), aimed at improving and securing the analytics functionality within Streamlit applications. With minimal setup, track user interactions and visualize analytics directly in your browser, akin to Google Analytics but tailored for Streamlit.
-
-This fork was initiated due to the inability to collaborate directly on the upstream project, which currently has several unresolved security issues and bugs. Our intention is to maintain a positive relationship with the original project and its creator, focusing on enhancing the tool's reliability and security for the community.
+Streamlit Analytics2 is a maintained, powerful tool for tracking user interactions and gathering insights from your Streamlit applications. With just a few lines of code, you can start monitoring user behavior and making data-driven decisions to improve your app.
 
 > [!Note]
 > This fork is confirmed to fix the deprecation ```st.experimental_get_query_params``` alerts.    [Context](https://docs.streamlit.io/library/api-reference/utilities/st.experimental_get_query_params)  
 > It also resolved 25 security issues that exist in the upstream (2 Critical, 11 High, 10 Moderate, 2 Low) 
 
-<sup>This project is in active development. We welcome contributions and address security concerns on a best-effort basis, with details available in our [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md) respectively.</sup>
 
+## Getting Started
 
-## Installation
+1. Install the package:
+   ```
+   pip install streamlit-analytics2
+   ```
 
-```bash
-pip install streamlit-analytics2
-```
+2. Import and initialize the tracker in your Streamlit script:
+   ```python
+   import streamlit as st
+   import streamlit_analytics2 as streamlit_analytics
 
-## Migration from upstream streamlit-analytics
+   with streamlit_analytics.track():
+      st.write("Hello, World!")
+      st.button("Click me")
+   ```
 
-Only two single characters need to be changed and this has been tested and verified to work.
-1. Change your requirements.txt or other dependency file to use 'streamlit-analytics**2**'. Just add a '2'
-2. Change your code import to use 'streamlit_analytics**2** as streamlit_analytics'. Also, just add a '2'. Seen below.
+3. Run your Streamlit app and append `?analytics=on` to the URL to view the analytics dashboard.
 
-> [!IMPORTANT]
-> This project aims to be backwards compatible with the upstream and migration literally just means adding the number 2 and getting the new package.  
-> The above steps should be sufficient but if you need more steps, check out our [Migration Guide](https://github.com/444B/streamlit-analytics2/wiki/0.--Migration-Guide-from-streamlit%E2%80%90analytics-to-streamlit%E2%80%90analytics2).
-
-## How to Use
-
-Simple integration with any Streamlit app:
-
-```python
-import streamlit as st
-import streamlit_analytics2 as streamlit_analytics
-
-with streamlit_analytics.track():
-    st.write("Hello, World!")
-    st.button("Click me")
-```
-
-All interactions are now tracked, supporting all standard Streamlit widgets.
-
-Another way to get the tracking is to call the streamlit_analytics.track() on your main() function:
-```python
-import streamlit as st
-import streamlit_analytics2 as streamlit_analytics
-
-with streamlit_analytics.track():
-    main()
-
-def main():
-    st.write("Hello, World!")
-    st.button("Click me")
-```
-Using streamlit_analytics.track() is the recommended method and will become the primary way to initiate streamlit-analytics2 after the [upcoming v.1.0.0](https://github.com/444B/streamlit-analytics2/issues/53) release.
+## Contributing
 
 ### Session-Level Analytics
 
@@ -85,20 +57,18 @@ def main():
 
 ## Moving Forward
 
-- **TODOs and Feature Requests**: We've transitioned our roadmap and feature requests to [GitHub Issues](https://github.com/your-repo/streamlit-analytics2/issues). Feel free to contribute ideas or report bugs!  
-- **Advanced Configuration**: Detailed guidance on advanced setup (including password protection and database integration) options are available in our [Project Wiki](https://github.com/444B/streamlit-analytics2/wiki).  
-- **Improved Performance**: We are focused on providing a use of streamlit-analytics2 that doesn't impact the performance of your app.  
-All suggestions and inputs are welcome on our [forum](https://github.com/444B/streamlit-analytics2/discussions)
 
-## Contributing
+## Upcoming Features
 
-Your contributions are welcome! Please refer to our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to make a difference.
-The step by step guide will show you how to set up a dev environment, testing standards and how to make a PR.
+We're currently working on a major breaking release that will introduce exciting new features and enhancements:
 
-## Security
+- Multi-page tracking: Monitor user interactions across multiple pages of your Streamlit app.
+- Improved metrics accuracy: Get more precise and reliable usage metrics.
+- Flexible data formats: Choose between CSV or JSON for storing and exporting analytics data.
+- Customization screen: Easily configure and customize the analytics settings through a user-friendly interface.
 
-We prioritize the security of our users' data. For reporting security vulnerabilities or for more information, please review our [SECURITY.md](SECURITY.md).
+Stay tuned for more updates and join our [community](https://github.com/444B/streamlit-analytics2/discussions) to be part of shaping the future of Streamlit Analytics2!
 
-## Acknowledgments
+## License
 
-A special thanks to [jrieke](https://github.com/jrieke) and all contributors to the original `streamlit-analytics` project. Your work has inspired continued innovation and community collaboration.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.

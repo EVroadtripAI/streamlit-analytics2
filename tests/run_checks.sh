@@ -1,73 +1,159 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 # Define color codes
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-NO_COLOR='\033[0m' # No Color
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NO_COLOR='\033[0m'
 
-# Check that the user is in the tests directory
+# Exit on undefined variables and pipe failures
+set -uo pipefail
+
+# Help function
+show_help() {
+    echo "Usage: ./run_checks.sh [--fix]"
+    echo ""
+    echo "Options:"
+    echo "  --help    Show this help message"
+    echo "  --fix     Run formatters and linters in fix mode"
+    echo ""
+    echo "Without options, runs in check-only mode"
+    exit 0
+}
+
+# Parse arguments
+FIX_MODE=false
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --help)
+            show_help
+            ;;
+        --fix)
+            FIX_MODE=true
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            show_help
+            ;;
+    esac
+done
+
+# Function to print formatted section headers
+print_section() {
+    echo -e "\n${BLUE}=== $1 ===${NO_COLOR}"
+}
+
+# Function to run a check and record its status
+run_check() {
+    local cmd="$1"
+    local name="$2"
+    print_section "Running $name"
+    if eval "$cmd" 2>&1 | tee -a "$error_log"; then
+        echo -e "${GREEN}✓ $name passed${NO_COLOR}"
+        return 0
+    else
+        echo -e "${RED}✗ $name failed${NO_COLOR}"
+        return 1
+    fi
+}
+
+# Check that we're in the tests directory
 if [ ! -f "run_checks.sh" ]; then
-    echo -e "${RED}Please run this script from the tests directory.${NO_COLOR}"
+    echo -e "${RED}Error: Please run this script from the tests directory${NO_COLOR}"
     exit 1
 fi
 
-# Allow script to continue running even if errors occur
-set +e
+# Define source directory
+SRC_DIR="../src/streamlit_analytics2"
 
-# Initialize a variable to keep track of any failures
-any_failures=0
-
-# Generate a timestamp
+# Generate timestamp and filenames
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
-
-# Create a markdown file to store the results
 filename="test_results_$timestamp.md"
-# Temporary file to store errors
 error_log="errors_$timestamp.tmp"
 
-# Prepend a go syntax to the file in order to increase readability
-echo '```go' > $filename
-
-# Run checks and capture their exit statuses
+# Initialize results file with markdown formatting
 {
-echo "Running Black..."
-black ../src --check --verbose 2>&1 | tee -a $error_log || any_failures=1
-echo -e "Complete.\n"
+    echo "# Code Quality Check Results"
+    echo "Run on: $(date)"
+    echo "Mode: $([ "$FIX_MODE" = true ] && echo 'Fix' || echo 'Check')"
+    echo ""
+    echo '```text'
+} > "$filename"
 
-echo "Sorting imports with isort..."
-isort ../src --check-only --verbose --diff 2>&1 | tee -a $error_log || any_failures=1
-echo -e "Complete.\n"
+# Initialize error count
+any_failures=0
 
-echo "Linting with Flake8..."
-flake8 ../src 2>&1 | tee -a $error_log || any_failures=1
-echo -e "Complete.\n"
-
-echo "Static type check with mypy..."
-mypy ../src --config-file ../mypy.ini 2>&1 | tee -a $error_log || any_failures=1
-echo -e "Complete.\n"
-
-echo "Checking for security issues with bandit..."
-bandit -r ../src 2>&1 | tee -a $error_log || any_failures=1
-echo -e "Complete.\n"
-
-echo "Running pytest with coverage..."
-pytest ../ 2>&1 | tee -a $error_log || any_failures=1
-echo -e "Complete.\n"
-
-if [ $any_failures -eq 0 ]; then
-    echo -e "${GREEN}All checks passed! This would likely pass the GitHub Actions when being pushed to prod. Read the log file for more details.${NO_COLOR}"
-else
-    echo -e "${RED}Some checks failed. Please review the log file for details.${NO_COLOR}"
-fi
-} | tee -a $filename
-
-# Check if there are errors and append them to the markdown file
-if [ -s $error_log ]; then
-    echo -e "\n\n## Errors\n" >> $filename
-    cat $error_log >> $filename
+# Ensure virtual environment is activated
+if [ -z "${VIRTUAL_ENV:-}" ]; then
+    print_section "Setting up virtual environment"
+    if command -v uv >/dev/null 2>&1; then
+        uv venv
+        source .venv/bin/activate
+        uv pip install -e "..[dev]"
+    else
+        echo -e "${RED}Error: uv is not installed. Please install it first.${NO_COLOR}"
+        exit 1
+    fi
 fi
 
-echo '```' >> $filename
+# Run all checks
+{
+    # Format checks
+    if [ "$FIX_MODE" = true ]; then
+        run_check "black ${SRC_DIR}" "Black formatting" || any_failures=1
+        run_check "isort ${SRC_DIR}" "Import sorting" || any_failures=1
+    else
+        run_check "black ${SRC_DIR} --check --verbose" "Black formatting" || any_failures=1
+        run_check "isort ${SRC_DIR} --check-only --verbose --diff" "Import sorting" || any_failures=1
+    fi
+    
+    # Lint checks
+    run_check "flake8 ${SRC_DIR}" "Flake8 linting" || any_failures=1
+    
+    # Type checks
+    run_check "mypy ${SRC_DIR} --config-file ../mypy.ini" "MyPy type checking" || any_failures=1
+    
+    # Security checks
+    run_check "bandit -r ${SRC_DIR}" "Bandit security check" || any_failures=1
+    
+    # Tests with coverage
+    run_check "pytest ../ --cov=${SRC_DIR} --cov-report=term-missing" "Pytest with coverage" || any_failures=1
 
-# Cleanup temporary error log
-rm $error_log
+    # Summary
+    echo -e "\n=== Summary ==="
+    if [ $any_failures -eq 0 ]; then
+        echo -e "${GREEN}✨ All checks passed! Ready for production.${NO_COLOR}"
+    else
+        echo -e "${RED}❌ Some checks failed. Please review the log for details.${NO_COLOR}"
+        if [ "$bla" = false ]; then
+            echo -e "${YELLOW}Try running with --fix to automatically fix formatting issues${NO_COLOR}"
+        fi
+    fi
+} 2>&1 | tee -a "$filename"
+
+# Finalize markdown file
+echo '```' >> "$filename"
+
+# Add error log if there are any errors
+if [ -s "$error_log" ]; then
+    {
+        echo -e "\n## Detailed Error Log"
+        echo '```text'
+        cat "$error_log"
+        echo '```'
+    } >> "$filename"
+fi
+
+# Cleanup
+rm -f "$error_log"
+
+# Optional: Open the results file
+if command -v code >/dev/null 2>&1; then
+    code "$filename"
+elif command -v open >/dev/null 2>&1; then
+    open "$filename"
+fi
+
+exit $any_failures
