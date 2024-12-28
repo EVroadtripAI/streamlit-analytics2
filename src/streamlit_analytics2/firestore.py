@@ -28,7 +28,7 @@ def load(
     """Load count data from firestore into `counts`."""
     firestore_counts = None
     firestore_session_counts = None
-    
+
     if streamlit_secrets_firestore_key is not None:
         # Following along here
         # https://blog.streamlit.io/streamlit-firestore-continued/#part-4-securely-deploying-on-streamlit-sharing for deploying to Streamlit Cloud with Firestore
