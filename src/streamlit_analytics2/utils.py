@@ -45,7 +45,7 @@ def session_counts_reset() -> Dict[str, Any]:
     """
     # Use yesterday as first entry to make chart look better.
     yesterday = str(datetime.date.today() - datetime.timedelta(days=1))
-    output = {}
+    output: Dict[str, Any] = {}
     output["total_pageviews"] = 0
     output["total_script_runs"] = 0
     output["total_time_seconds"] = 0
