@@ -7,15 +7,16 @@ import json
 import logging
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional, Union, Dict, Any
+from typing import Any, Dict, Optional, Union
 
 import streamlit as st
 from streamlit import session_state as ss
 
+from . import display, firestore
+from .utils import initialize_session_counts, replace_empty
+
 # from streamlit_searchbox import st_searchbox
 
-from . import display, firestore
-from .utils import replace_empty, initialize_session_counts
 
 # logging.basicConfig(
 #     level=logging.INFO, format="streamlit-analytics2: %(levelname)s: %(message)s"
