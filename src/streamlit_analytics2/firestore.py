@@ -23,7 +23,7 @@ def load(
     collection_name,
     streamlit_secrets_firestore_key,
     firestore_project_name,
-    session_id = None,
+    session_id=None,
 ):
     """Load count data from firestore into `counts`."""
     if streamlit_secrets_firestore_key is not None:
@@ -42,12 +42,12 @@ def load(
         firestore_counts = col.document("counts").get().to_dict()
         if session_id is not None:
             firestore_session_counts = col.document(session_id).get().to_dict()
-        
+
     if firestore_counts is not None:
         for key in firestore_counts:
             if key in counts:
                 counts[key] = firestore_counts[key]
-                
+
     if firestore_session_counts is not None:
         for key in firestore_session_counts:
             if key in ss.session_counts:
@@ -63,10 +63,10 @@ def save(
     collection_name,
     streamlit_secrets_firestore_key,
     firestore_project_name,
-    session_id = None,
+    session_id=None,
 ):
     """Save count data from `counts` to firestore."""
-    
+
     # Ensure all keys are strings and not empty
     sanitized_counts = sanitize_data(counts)
 
@@ -88,4 +88,6 @@ def save(
     col.document("counts").set(sanitized_counts)  # creates if doesn't exist
     if session_id is not None:
         sanitized_session_counts = sanitize_data(ss.session_counts)
-        col.document(session_id).set(sanitized_session_counts)  # creates if doesn't exist
+        col.document(session_id).set(
+            sanitized_session_counts
+        )  # creates if doesn't exist

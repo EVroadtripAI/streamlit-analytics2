@@ -31,8 +31,8 @@ def replace_empty(s):
         return " "
     else:
         return s
-    
-    
+
+
 def session_counts_reset() -> Dict[str, Any]:
     """
     Reset the session counts to a new session.
@@ -51,7 +51,7 @@ def session_counts_reset() -> Dict[str, Any]:
     output["per_day"] = {"days": [str(yesterday)], "pageviews": [0], "script_runs": [0]}
     output["widgets"] = {}
     output["start_time"] = datetime.datetime.now().strftime("%d %b %Y, %H:%M:%S")
-    
+
     return output
 
 

@@ -11,6 +11,7 @@ from typing import Optional, Union, Dict, Any
 
 import streamlit as st
 from streamlit import session_state as ss
+
 # from streamlit_searchbox import st_searchbox
 
 from . import display, firestore
@@ -26,6 +27,7 @@ from .utils import replace_empty, initialize_session_counts
 counts = {"loaded_from_firestore": False}
 
 logging.info("SA2: Streamlit-analytics2 successfully imported")
+
 
 def reset_counts():
     # Use yesterday as first entry to make chart look better.
@@ -88,6 +90,7 @@ _orig_sidebar_color_picker = st.sidebar.color_picker
 # _orig_sidebar_toggle = st.sidebar.toggle
 # _orig_sidebar_camera_input = st.sidebar.camera_input
 
+
 def update_session_stats(counts_dict: Dict[str, Any]):
     """
     Update the session counts with the current state.
@@ -111,7 +114,9 @@ def update_session_stats(counts_dict: Dict[str, Any]):
     counts_dict["total_script_runs"] += 1
     counts_dict["per_day"]["script_runs"][-1] += 1
     now = datetime.datetime.now()
-    counts_dict["total_time_seconds"] += (now - st.session_state.last_time).total_seconds()
+    counts_dict["total_time_seconds"] += (
+        now - st.session_state.last_time
+    ).total_seconds()
     st.session_state.last_time = now
     if not st.session_state.user_tracked:
         st.session_state.user_tracked = True
@@ -133,19 +138,19 @@ def _wrap_checkbox(func):
     def new_func(label, *args, **kwargs):
         checked = func(label, *args, **kwargs)
         label = replace_empty(label)
-        
+
         # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = 0
         if checked != st.session_state.state_dict.get(label, None):
             counts["widgets"][label] += 1
-            
+
         # Update session counts
         if label not in ss.session_counts["widgets"]:
             ss.session_counts["widgets"][label] = 0
         if checked != st.session_state.state_dict.get(label, None):
             ss.session_counts["widgets"][label] += 1
-            
+
         st.session_state.state_dict[label] = checked
         return checked
 
@@ -160,19 +165,19 @@ def _wrap_button(func):
     def new_func(label, *args, **kwargs):
         clicked = func(label, *args, **kwargs)
         label = replace_empty(label)
-        
+
         # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = 0
         if clicked:
             counts["widgets"][label] += 1
-            
-        # Update session counts    
+
+        # Update session counts
         if label not in ss.session_counts["widgets"]:
             ss.session_counts["widgets"][label] = 0
         if clicked:
             ss.session_counts["widgets"][label] += 1
-            
+
         st.session_state.state_dict[label] = clicked
         return clicked
 
@@ -187,7 +192,7 @@ def _wrap_file_uploader(func):
     def new_func(label, *args, **kwargs):
         uploaded_file = func(label, *args, **kwargs)
         label = replace_empty(label)
-        
+
         # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = 0
@@ -197,13 +202,13 @@ def _wrap_file_uploader(func):
         #   was uploaded.
         if uploaded_file and not st.session_state.state_dict.get(label, None):
             counts["widgets"][label] += 1
-            
+
         # Update session counts
         if label not in ss.session_counts["widgets"]:
             ss.session_counts["widgets"][label] = 0
         if uploaded_file and not st.session_state.state_dict.get(label, None):
             ss.session_counts["widgets"][label] += 1
-            
+
         st.session_state.state_dict[label] = bool(uploaded_file)
         return uploaded_file
 
@@ -220,7 +225,7 @@ def _wrap_select(func):
         orig_selected = func(label, options, *args, **kwargs)
         label = replace_empty(label)
         selected = replace_empty(orig_selected)
-        
+
         # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = {}
@@ -230,7 +235,7 @@ def _wrap_select(func):
                 counts["widgets"][label][option] = 0
         if selected != st.session_state.state_dict.get(label, None):
             counts["widgets"][label][selected] += 1
-            
+
         # Update session counts
         if label not in ss.session_counts["widgets"]:
             ss.session_counts["widgets"][label] = {}
@@ -240,7 +245,7 @@ def _wrap_select(func):
                 ss.session_counts["widgets"][label][option] = 0
         if selected != st.session_state.state_dict.get(label, None):
             ss.session_counts["widgets"][label][selected] += 1
-            
+
         st.session_state.state_dict[label] = selected
         return orig_selected
 
@@ -256,7 +261,7 @@ def _wrap_multiselect(func):
     def new_func(label, options, *args, **kwargs):
         selected = func(label, options, *args, **kwargs)
         label = replace_empty(label)
-        
+
         # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = {}
@@ -268,7 +273,7 @@ def _wrap_multiselect(func):
             sel = replace_empty(sel)
             if sel not in st.session_state.state_dict.get(label, []):
                 counts["widgets"][label][sel] += 1
-                
+
         # Update session counts
         if label not in ss.session_counts["widgets"]:
             ss.session_counts["widgets"][label] = {}
@@ -280,7 +285,7 @@ def _wrap_multiselect(func):
             sel = replace_empty(sel)
             if sel not in st.session_state.state_dict.get(label, []):
                 ss.session_counts["widgets"][label][sel] += 1
-                
+
         st.session_state.state_dict[label] = selected
         return selected
 
@@ -293,15 +298,15 @@ def _wrap_multiselect(func):
 #     """
 #     def new_func(search_function, *args, **kwargs):
 #         value = func(search_function, *args, **kwargs)
-        
+
 #         # Get label from kwargs or use default
 #         label = kwargs.get('label', 'searchbox')
 #         label = replace_empty(label)
-        
+
 #         # Update aggregate counts
 #         if label not in counts["widgets"]:
 #             counts["widgets"][label] = {}
-            
+
 #         # Update session counts
 #         if label not in ss.session_counts["widgets"]:
 #             ss.session_counts["widgets"][label] = {}
@@ -312,16 +317,15 @@ def _wrap_multiselect(func):
 #             counts["widgets"][label][formatted_value] = 0
 #         if formatted_value not in ss.session_counts["widgets"][label]:
 #             ss.session_counts["widgets"][label][formatted_value] = 0
-            
+
 #         if formatted_value != st.session_state.state_dict.get(label, None):
 #             counts["widgets"][label][formatted_value] += 1
 #             ss.session_counts["widgets"][label][formatted_value] += 1
-            
+
 #         st.session_state.state_dict[label] = formatted_value
 #         return value
 
 #     return new_func
-
 
 
 def _wrap_value(func):
@@ -333,11 +337,11 @@ def _wrap_value(func):
 
     def new_func(label, *args, **kwargs):
         value = func(label, *args, **kwargs)
-        
+
         # Update aggregate counts
         if label not in counts["widgets"]:
             counts["widgets"][label] = {}
-            
+
         # Update session counts
         if label not in ss.session_counts["widgets"]:
             ss.session_counts["widgets"][label] = {}
@@ -359,11 +363,11 @@ def _wrap_value(func):
             counts["widgets"][label][formatted_value] = 0
         if formatted_value not in ss.session_counts["widgets"][label]:
             ss.session_counts["widgets"][label][formatted_value] = 0
-            
+
         if formatted_value != st.session_state.state_dict.get(label, None):
             counts["widgets"][label][formatted_value] += 1
             ss.session_counts["widgets"][label][formatted_value] += 1
-            
+
         st.session_state.state_dict[label] = formatted_value
         return value
 
@@ -379,11 +383,11 @@ def _wrap_chat_input(func):
 
     def new_func(placeholder, *args, **kwargs):
         value = func(placeholder, *args, **kwargs)
-        
+
         # Update aggregate counts
         if placeholder not in counts["widgets"]:
             counts["widgets"][placeholder] = {}
-            
+
         # Update session counts
         if placeholder not in ss.session_counts["widgets"]:
             ss.session_counts["widgets"][placeholder] = {}
@@ -398,7 +402,7 @@ def _wrap_chat_input(func):
         if formatted_value != st.session_state.state_dict.get(placeholder):
             counts["widgets"][placeholder][formatted_value] += 1
             ss.session_counts["widgets"][placeholder][formatted_value] += 1
-            
+
         st.session_state.state_dict[placeholder] = formatted_value
         return value
 
@@ -418,7 +422,7 @@ def start_tracking(
     Start tracking user inputs to a streamlit app.
     """
     initialize_session_counts()
-    
+
     if (
         streamlit_secrets_firestore_key is not None
         and not counts["loaded_from_firestore"]
@@ -440,7 +444,6 @@ def start_tracking(
                 print("Loaded session count data from firestore:")
                 print(ss.session_counts)
             print()
-            
 
     elif firestore_key_file and not counts["loaded_from_firestore"]:
         firestore.load(
@@ -530,7 +533,7 @@ def start_tracking(
     st.sidebar.file_uploader = _wrap_file_uploader(_orig_sidebar_file_uploader)  # type: ignore
     st.sidebar.color_picker = _wrap_value(_orig_sidebar_color_picker)  # type: ignore
     # st.sidebar.st_searchbox = _wrap_searchbox(_orig_sidebar_searchbox)  # type: ignore
-    
+
     # new elements, testing
     # st.sidebar.download_button = _wrap_value(_orig_sidebar_download_button)
     # st.sidebar.link_button = _wrap_value(_orig_sidebar_link_button)
@@ -641,7 +644,7 @@ def stop_tracking(
             print("Saving session count data to firestore:")
             print(ss.session_counts)
             print()
-            
+
         # Save both global and session counts in a single call
         firestore.save(
             counts=counts,
