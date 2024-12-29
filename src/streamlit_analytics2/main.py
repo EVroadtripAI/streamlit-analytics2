@@ -14,7 +14,7 @@ from streamlit import session_state as ss
 
 from . import display, firestore, widgets, utils
 from . import wrappers as _wrap
-from .state import counts
+from .state import data, reset_data
 
 # from streamlit_searchbox import st_searchbox
 
@@ -30,18 +30,9 @@ logging.basicConfig(
 # logging.info("SA2: Streamlit-analytics2 successfully imported")
 
 
-def reset_counts():
-    # Use yesterday as first entry to make chart look better.
-    yesterday = str(datetime.date.today() - datetime.timedelta(days=1))
-    counts["total_pageviews"] = 0
-    counts["total_script_runs"] = 0
-    counts["total_time_seconds"] = 0
-    counts["per_day"] = {"days": [str(yesterday)], "pageviews": [0], "script_runs": [0]}
-    counts["widgets"] = {}
-    counts["start_time"] = datetime.datetime.now().strftime("%d %b %Y, %H:%M:%S")
 
 
-reset_counts()
+reset_data()
 
 
 # widgets.copy_original()
@@ -96,50 +87,50 @@ _orig_sidebar_color_picker = st.sidebar.color_picker
 
 
 
-def update_session_stats(counts_dict: Dict[str, Any]):
+def update_session_stats(data_dict: Dict[str, Any]):
     """
-    Update the session counts with the current state.
+    Update the session data with the current state.
 
     Parameters
     ----------
-    counts_dict : Dict[str, Any]
-        Counts, be they aggregate or session-specific.
+    data : Dict[str, Any]
+        Data, either aggregate or session-specific.
 
     Returns
     -------
     Dict[str, Any]
-        Updated counts with the current state of time-dependent elements.
+        Updated data with the current state of time-dependent elements.
     """
     today = str(datetime.date.today())
-    if counts_dict["per_day"]["days"][-1] != today:
+    if data_dict["per_day"]["days"][-1] != today:
         # TODO: Insert 0 for all days between today and last entry.
-        counts_dict["per_day"]["days"].append(today)
-        counts_dict["per_day"]["pageviews"].append(0)
-        counts_dict["per_day"]["script_runs"].append(0)
-    counts_dict["total_script_runs"] += 1
-    counts_dict["per_day"]["script_runs"][-1] += 1
+        data_dict["per_day"]["days"].append(today)
+        data_dict["per_day"]["pageviews"].append(0)
+        data_dict["per_day"]["script_runs"].append(0)
+    data_dict["total_script_runs"] += 1
+    data_dict["per_day"]["script_runs"][-1] += 1
     now = datetime.datetime.now()
-    counts_dict["total_time_seconds"] += (
+    data_dict["total_time_seconds"] += (
         now - st.session_state.last_time
     ).total_seconds()
     st.session_state.last_time = now
     if not st.session_state.user_tracked:
         st.session_state.user_tracked = True
-        counts_dict["total_pageviews"] += 1
-        counts_dict["per_day"]["pageviews"][-1] += 1
+        data_dict["total_pageviews"] += 1
+        data_dict["per_day"]["pageviews"][-1] += 1
 
 
 def _track_user():
     """Track individual pageviews by storing user id to session state."""
-    update_session_stats(counts)
-    update_session_stats(ss.session_counts)
+    update_session_stats(data)
+    update_session_stats(ss.session_data)
 
 
 
 def start_tracking(
     verbose: bool = False,
     firestore_key_file: Optional[str] = None,
-    firestore_collection_name: str = "counts",
+    firestore_collection_name: str = "data",
     load_from_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
     firestore_project_name: Optional[str] = None,
@@ -152,69 +143,69 @@ def start_tracking(
     stop_tracking()` at the end of your streamlit script. For a more convenient
     interface, wrap your streamlit calls in `with streamlit_analytics.track():`.
     """
-    utils.initialize_session_counts()
+    utils.initialize_session_data()
 
     if (
         streamlit_secrets_firestore_key is not None
-        and not counts["loaded_from_firestore"]
+        and not data["loaded_from_firestore"]
     ):
-        # Load both global and session counts in a single call
+        # Load both global and session data in a single call
         firestore.load(
-            counts=counts,
+            data=data,
             service_account_json=None,
             collection_name=firestore_collection_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
             session_id=session_id,  # This will load both global and session data
         )
-        counts["loaded_from_firestore"] = True
+        data["loaded_from_firestore"] = True
         if verbose:
             print("Loaded count data from firestore:")
-            print(counts)
+            print(data)
             if session_id:
                 print("Loaded session count data from firestore:")
-                print(ss.session_counts)
+                print(ss.session_data)
             print()
 
-    elif firestore_key_file and not counts["loaded_from_firestore"]:
+    elif firestore_key_file and not data["loaded_from_firestore"]:
         firestore.load(
-            counts,
+            data,
             firestore_key_file,
             firestore_collection_name,
             streamlit_secrets_firestore_key=None,
             firestore_project_name=None,
             session_id=session_id,
         )
-        counts["loaded_from_firestore"] = True
+        data["loaded_from_firestore"] = True
         if verbose:
             print("Loaded count data from firestore:")
-            print(counts)
+            print(data)
             print()
 
     if load_from_json is not None:
-        log_msg_prefix = "Loading counts from json: "
+        log_msg_prefix = "Loading data from json: "
         try:
             # Using Path's read_text method simplifies file reading
             json_contents = Path(load_from_json).read_text()
-            json_counts = json.loads(json_contents)
+            json_data = json.loads(json_contents)
 
-            # Use dict.update() for a cleaner way to merge the counts
-            # This assumes you want json_counts to overwrite existing keys in counts
-            counts.update({k: json_counts[k] for k in json_counts if k in counts})
+            # Use dict.update() for a cleaner way to merge the data
+            # This assumes you want json_data to overwrite existing keys in data
+            data.update({k: json_data[k] for k in json_data if k in data})
 
             if verbose:
                 logging.info(f"{log_msg_prefix}{load_from_json}")
-                logging.info("SA2: Success! Loaded counts:")
-                logging.info(counts)
+                logging.info("SA2: Success! Loaded data:")
+                logging.info(data)
 
         except FileNotFoundError:
             if verbose:
                 logging.warning(
-                    f"SA2: File {load_from_json} not found, proceeding with empty counts."
+                    f"SA2: File {load_from_json} not found, proceeding with empty data."
                 )
         except Exception as e:
             # Catch-all for any other exceptions, log the error
-            logging.error(f"SA2: Error loading counts from {load_from_json}: {e}")
+            logging.error(f"SA2: Error loading data from {load_from_json}: {e}")
 
     # Reset session state.
     if "user_tracked" not in st.session_state:
@@ -299,7 +290,7 @@ def stop_tracking(
     unsafe_password: Optional[str] = None,
     save_to_json: Optional[Union[str, Path]] = None,
     firestore_key_file: Optional[str] = None,
-    firestore_collection_name: str = "counts",
+    firestore_collection_name: str = "data",
     verbose: bool = False,
     load_from_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
@@ -314,10 +305,10 @@ def stop_tracking(
     """
 
     if verbose:
-        logging.info("SA2: Finished script execution. New counts:")
+        logging.info("SA2: Finished script execution. New data:")
         logging.info(
-            "%s", counts
-        )  # Use %s and pass counts to logging to handle complex objects
+            "%s", data
+        )  # Use %s and pass data to logging to handle complex objects
         logging.info("%s", "-" * 80)  # For separators or multi-line messages
 
     # widgets.reset_widgets()
@@ -377,14 +368,14 @@ def stop_tracking(
     ):
         if verbose:
             print("Saving count data to firestore:")
-            print(counts)
+            print(data)
             print("Saving session count data to firestore:")
-            print(ss.session_counts)
+            print(ss.session_data)
             print()
 
-        # Save both global and session counts in a single call
+        # Save both global and session data in a single call
         firestore.save(
-            counts=counts,
+            data=data,
             service_account_json=None,
             collection_name=firestore_collection_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
@@ -399,10 +390,10 @@ def stop_tracking(
     ):
         if verbose:
             print("Saving count data to firestore:")
-            print(counts)
+            print(data)
             print()
         firestore.save(
-            counts,
+            data,
             firestore_key_file,
             firestore_collection_name,
             streamlit_secrets_firestore_key=None,
@@ -410,10 +401,10 @@ def stop_tracking(
             session_id=session_id,
         )
 
-    # Dump the counts to json file if `save_to_json` is set.
+    # Dump the data to json file if `save_to_json` is set.
     # TODO: Make sure this is not locked if writing from multiple threads.
 
-    # Assuming 'counts' is your data to be saved and 'save_to_json' is the path to your json file.
+    # Assuming 'data' is your data to be saved and 'save_to_json' is the path to your json file.
     if save_to_json is not None:
         # Create a Path object for the file
         file_path = Path(save_to_json)
@@ -423,7 +414,7 @@ def stop_tracking(
 
         # Open the file and dump the json data
         with file_path.open("w") as f:
-            json.dump(counts, f)
+            json.dump(data, f)
 
         if verbose:
             print("Storing results to file:", save_to_json)
@@ -432,7 +423,7 @@ def stop_tracking(
     query_params = st.query_params
     if "analytics" in query_params and "on" in query_params["analytics"]:
         st.write("---")
-        display.show_results(counts, reset_counts, unsafe_password)
+        display.show_results(data, reset_data, unsafe_password)
 
 
 @contextmanager
@@ -440,7 +431,7 @@ def track(
     unsafe_password: Optional[str] = None,
     save_to_json: Optional[Union[str, Path]] = None,
     firestore_key_file: Optional[str] = None,
-    firestore_collection_name: str = "counts",
+    firestore_collection_name: str = "data",
     verbose=False,
     load_from_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,

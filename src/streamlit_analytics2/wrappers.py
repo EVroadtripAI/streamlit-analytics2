@@ -4,7 +4,7 @@ from streamlit import session_state as ss
 import datetime
 
 from . import utils
-from .state import counts 
+from .state import data 
 
 
 
@@ -17,17 +17,17 @@ def checkbox(func):
         checked = func(label, *args, **kwargs)
         label = utils.replace_empty(label)
 
-        # Update aggregate counts
-        if label not in counts["widgets"]:
-            counts["widgets"][label] = 0
+        # Update aggregate data
+        if label not in data["widgets"]:
+            data["widgets"][label] = 0
         if checked != st.session_state.state_dict.get(label, None):
-            counts["widgets"][label] += 1
+            data["widgets"][label] += 1
 
-        # Update session counts
-        if label not in ss.session_counts["widgets"]:
-            ss.session_counts["widgets"][label] = 0
+        # Update session data
+        if label not in ss.session_data["widgets"]:
+            ss.session_data["widgets"][label] = 0
         if checked != st.session_state.state_dict.get(label, None):
-            ss.session_counts["widgets"][label] += 1
+            ss.session_data["widgets"][label] += 1
 
         st.session_state.state_dict[label] = checked
         return checked
@@ -44,17 +44,17 @@ def button(func):
         clicked = func(label, *args, **kwargs)
         label = utils.replace_empty(label)
 
-        # Update aggregate counts
-        if label not in counts["widgets"]:
-            counts["widgets"][label] = 0
+        # Update aggregate data
+        if label not in data["widgets"]:
+            data["widgets"][label] = 0
         if clicked:
-            counts["widgets"][label] += 1
+            data["widgets"][label] += 1
 
-        # Update session counts
-        if label not in ss.session_counts["widgets"]:
-            ss.session_counts["widgets"][label] = 0
+        # Update session data
+        if label not in ss.session_data["widgets"]:
+            ss.session_data["widgets"][label] = 0
         if clicked:
-            ss.session_counts["widgets"][label] += 1
+            ss.session_data["widgets"][label] += 1
 
         st.session_state.state_dict[label] = clicked
         return clicked
@@ -71,21 +71,21 @@ def file_uploader(func):
         uploaded_file = func(label, *args, **kwargs)
         label = utils.replace_empty(label)
 
-        # Update aggregate counts
-        if label not in counts["widgets"]:
-            counts["widgets"][label] = 0
+        # Update aggregate data
+        if label not in data["widgets"]:
+            data["widgets"][label] = 0
         # TODO: Right now this doesn't track when multiple files are uploaded one after
         #   another. Maybe compare files directly (but probably not very clever to
         #   store in session state) or hash them somehow and check if a different file
         #   was uploaded.
         if uploaded_file and not st.session_state.state_dict.get(label, None):
-            counts["widgets"][label] += 1
+            data["widgets"][label] += 1
 
-        # Update session counts
-        if label not in ss.session_counts["widgets"]:
-            ss.session_counts["widgets"][label] = 0
+        # Update session data
+        if label not in ss.session_data["widgets"]:
+            ss.session_data["widgets"][label] = 0
         if uploaded_file and not st.session_state.state_dict.get(label, None):
-            ss.session_counts["widgets"][label] += 1
+            ss.session_data["widgets"][label] += 1
 
         st.session_state.state_dict[label] = bool(uploaded_file)
         return uploaded_file
@@ -104,25 +104,25 @@ def select(func):
         label = utils.replace_empty(label)
         selected = utils.replace_empty(orig_selected)
 
-        # Update aggregate counts
-        if label not in counts["widgets"]:
-            counts["widgets"][label] = {}
+        # Update aggregate data
+        if label not in data["widgets"]:
+            data["widgets"][label] = {}
         for option in options:
             option = utils.replace_empty(option)
-            if option not in counts["widgets"][label]:
-                counts["widgets"][label][option] = 0
+            if option not in data["widgets"][label]:
+                data["widgets"][label][option] = 0
         if selected != st.session_state.state_dict.get(label, None):
-            counts["widgets"][label][selected] += 1
+            data["widgets"][label][selected] += 1
 
-        # Update session counts
-        if label not in ss.session_counts["widgets"]:
-            ss.session_counts["widgets"][label] = {}
+        # Update session data
+        if label not in ss.session_data["widgets"]:
+            ss.session_data["widgets"][label] = {}
         for option in options:
             option = utils.replace_empty(option)
-            if option not in ss.session_counts["widgets"][label]:
-                ss.session_counts["widgets"][label][option] = 0
+            if option not in ss.session_data["widgets"][label]:
+                ss.session_data["widgets"][label][option] = 0
         if selected != st.session_state.state_dict.get(label, None):
-            ss.session_counts["widgets"][label][selected] += 1
+            ss.session_data["widgets"][label][selected] += 1
 
         st.session_state.state_dict[label] = selected
         return orig_selected
@@ -140,29 +140,29 @@ def multiselect(func):
         selected = func(label, options, *args, **kwargs)
         label = utils.replace_empty(label)
 
-        # Update aggregate counts
-        if label not in counts["widgets"]:
-            counts["widgets"][label] = {}
+        # Update aggregate data
+        if label not in data["widgets"]:
+            data["widgets"][label] = {}
         for option in options:
             option = utils.replace_empty(option)
-            if option not in counts["widgets"][label]:
-                counts["widgets"][label][option] = 0
+            if option not in data["widgets"][label]:
+                data["widgets"][label][option] = 0
         for sel in selected:
             sel = utils.replace_empty(sel)
             if sel not in st.session_state.state_dict.get(label, []):
-                counts["widgets"][label][sel] += 1
+                data["widgets"][label][sel] += 1
 
-        # Update session counts
-        if label not in ss.session_counts["widgets"]:
-            ss.session_counts["widgets"][label] = {}
+        # Update session data
+        if label not in ss.session_data["widgets"]:
+            ss.session_data["widgets"][label] = {}
         for option in options:
             option = utils.replace_empty(option)
-            if option not in ss.session_counts["widgets"][label]:
-                ss.session_counts["widgets"][label][option] = 0
+            if option not in ss.session_data["widgets"][label]:
+                ss.session_data["widgets"][label][option] = 0
         for sel in selected:
             sel = utils.replace_empty(sel)
             if sel not in st.session_state.state_dict.get(label, []):
-                ss.session_counts["widgets"][label][sel] += 1
+                ss.session_data["widgets"][label][sel] += 1
 
         st.session_state.state_dict[label] = selected
         return selected
@@ -180,13 +180,13 @@ def value(func):
     def new_func(label, *args, **kwargs):
         value = func(label, *args, **kwargs)
 
-        # Update aggregate counts
-        if label not in counts["widgets"]:
-            counts["widgets"][label] = {}
+        # Update aggregate data
+        if label not in data["widgets"]:
+            data["widgets"][label] = {}
 
-        # Update session counts
-        if label not in ss.session_counts["widgets"]:
-            ss.session_counts["widgets"][label] = {}
+        # Update session data
+        if label not in ss.session_data["widgets"]:
+            ss.session_data["widgets"][label] = {}
 
         formatted_value = utils.replace_empty(value)
         if type(value) is tuple and len(value) == 2:
@@ -201,14 +201,14 @@ def value(func):
         ):
             formatted_value = str(value)
 
-        if formatted_value not in counts["widgets"][label]:
-            counts["widgets"][label][formatted_value] = 0
-        if formatted_value not in ss.session_counts["widgets"][label]:
-            ss.session_counts["widgets"][label][formatted_value] = 0
+        if formatted_value not in data["widgets"][label]:
+            data["widgets"][label][formatted_value] = 0
+        if formatted_value not in ss.session_data["widgets"][label]:
+            ss.session_data["widgets"][label][formatted_value] = 0
 
         if formatted_value != st.session_state.state_dict.get(label, None):
-            counts["widgets"][label][formatted_value] += 1
-            ss.session_counts["widgets"][label][formatted_value] += 1
+            data["widgets"][label][formatted_value] += 1
+            ss.session_data["widgets"][label][formatted_value] += 1
 
         st.session_state.state_dict[label] = formatted_value
         return value
@@ -226,24 +226,24 @@ def chat_input(func):
     def new_func(placeholder, *args, **kwargs):
         value = func(placeholder, *args, **kwargs)
 
-        # Update aggregate counts
-        if placeholder not in counts["widgets"]:
-            counts["widgets"][placeholder] = {}
+        # Update aggregate data
+        if placeholder not in data["widgets"]:
+            data["widgets"][placeholder] = {}
 
-        # Update session counts
-        if placeholder not in ss.session_counts["widgets"]:
-            ss.session_counts["widgets"][placeholder] = {}
+        # Update session data
+        if placeholder not in ss.session_data["widgets"]:
+            ss.session_data["widgets"][placeholder] = {}
 
         formatted_value = str(value)
 
-        if formatted_value not in counts["widgets"][placeholder]:
-            counts["widgets"][placeholder][formatted_value] = 0
-        if formatted_value not in ss.session_counts["widgets"][placeholder]:
-            ss.session_counts["widgets"][placeholder][formatted_value] = 0
+        if formatted_value not in data["widgets"][placeholder]:
+            data["widgets"][placeholder][formatted_value] = 0
+        if formatted_value not in ss.session_data["widgets"][placeholder]:
+            ss.session_data["widgets"][placeholder][formatted_value] = 0
 
         if formatted_value != st.session_state.state_dict.get(placeholder):
-            counts["widgets"][placeholder][formatted_value] += 1
-            ss.session_counts["widgets"][placeholder][formatted_value] += 1
+            data["widgets"][placeholder][formatted_value] += 1
+            ss.session_data["widgets"][placeholder][formatted_value] += 1
 
         st.session_state.state_dict[placeholder] = formatted_value
         return value

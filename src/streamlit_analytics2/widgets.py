@@ -162,6 +162,6 @@ def reset_widgets():
     # st.sidebar.toggle = _orig_sidebar_toggle
     # st.sidebar.camera_input = _orig_sidebar_camera_input
     # st.sidebar.searchbox = _orig_sidebar_searchbox
-    # Save count data to firestore.
+    # Save data to firestore.
     # TODO: Maybe don't save on every iteration but on regular intervals in a background
     #   thread.
