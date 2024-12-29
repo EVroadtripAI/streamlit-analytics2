@@ -39,7 +39,23 @@ Streamlit Analytics2 is a maintained, powerful tool for tracking user interactio
 
 ## Contributing
 
-We're actively seeking additional maintainers to help improve Streamlit Analytics2. If you're interested in contributing, please check out our [Contributing Guidelines](.github/CONTRIBUTING.md) to get started. We welcome pull requests, bug reports, feature requests, and any other feedback.
+### Session-Level Analytics
+
+We have added a new feature to track session-level analytics. The default behavior of tracking across all sessions of your app is still supported, but now we also enable tracking at the individual session level as well. To do this, simply add a string representing a unique session ID to the track() function (recommended to be a UUID4):
+
+```python
+import streamlit as st
+import streamlit_analytics2 as streamlit_analytics
+
+with streamlit_analytics.track(session_id="1234567890"):
+    main()
+
+def main():
+    st.write("Hello, World!")
+    st.button("Click me")
+```
+
+## Moving Forward
 
 
 ## Upcoming Features
