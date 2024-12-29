@@ -421,6 +421,10 @@ def start_tracking(
 ):
     """
     Start tracking user inputs to a streamlit app.
+    
+    If you call this function directly, you NEED to call `streamlit_analytics.
+    stop_tracking()` at the end of your streamlit script. For a more convenient 
+    interface, wrap your streamlit calls in `with streamlit_analytics.track():`.
     """
     initialize_session_counts()
 
