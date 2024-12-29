@@ -23,9 +23,9 @@ classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 4 - Beta"
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
-    "streamlit>=1.41.1",
+    "streamlit>=1.37.0",
     "pandas>=2.2.3",
     "altair>=5.5.0",
     "google-cloud-firestore>=2.19.0",
@@ -101,7 +101,7 @@ ensure_newline_before_comments = true
 line_length = 88
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.10"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
