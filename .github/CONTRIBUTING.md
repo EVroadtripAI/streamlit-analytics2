@@ -28,6 +28,11 @@ uv pip install -e ".[dev]"
 streamlit run examples/minimal.py
 ```
 
+## Formatting and Linting
+```sh
+make clean_for_tests
+```
+
 ## Quality Checks
 ```sh
 cd tests/
