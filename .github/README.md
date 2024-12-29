@@ -12,7 +12,7 @@
 [![streamlit-analytics2](https://snyk.io/advisor/python/streamlit-analytics2/badge.svg)](https://snyk.io/advisor/python/streamlit-analytics2)
 
 
-## Check it out here! [👉 Demo 👈](https://steamlit-analytics2.streamlit.app/?analytics=on)
+## Check it out here! [👉 Demo 👈](https://sa2analyticsdemo.streamlit.app/?analytics=on)
 
 Streamlit Analytics2 is an actively maintained, powerful tool for tracking user interactions and gathering insights from your [Streamlit](https://streamlit.io/) applications. With just a few lines of code, you can gain insight into how your app is being used and making data-driven decisions to improve your app.
 
