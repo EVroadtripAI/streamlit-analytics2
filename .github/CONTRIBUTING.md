@@ -17,7 +17,7 @@ git checkout -b test/your-feature-name
 ```sh
 pip install uv
 uv venv .venv --python 3.10.16
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate
 ```
 3. Install dependencies:
 ```sh
@@ -28,16 +28,12 @@ uv pip install -e ".[dev]"
 streamlit run examples/minimal.py
 ```
 
-## Formatting and Linting
-```sh
-make clean_for_tests
-```
-
 ## Quality Checks
 ```sh
 cd tests/
 chmod +x run_checks.sh
-./run_check.sh
+./run_checks.sh
+./run_checks.sh --fix # this will implement the fixes
 ```
 
 ## Pull Request Process
@@ -51,4 +47,4 @@ git push origin test/your-feature-name
 
 For issues: [GitHub issue tracker](https://github.com/444B/streamlit-analytics2/issues/new/choose)
 
-By contributing, you agree to the project's [license](LICENSE.md).
+By contributing, you agree to the project's [license](https://github.com/444B/streamlit-analytics2/blob/main/LICENSE).
