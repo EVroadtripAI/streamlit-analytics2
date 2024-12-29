@@ -12,11 +12,11 @@ git checkout -b test/your-feature-name
 ```
 
 ## Development Environment Setup
-1. Install Python 3.12.x
+1. Install Python 3.10.x
 2. Install and setup uv:
 ```sh
 pip install uv
-uv venv
+uv venv .venv --python 3.10.16
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 3. Install dependencies:
