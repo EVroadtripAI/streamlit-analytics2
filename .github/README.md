@@ -37,8 +37,6 @@ Streamlit Analytics2 is a maintained, powerful tool for tracking user interactio
 
 3. Run your Streamlit app and append `?analytics=on` to the URL to view the analytics dashboard.
 
-## Contributing
-
 ### Session-Level Analytics
 
 We have added a new feature to track session-level analytics. The default behavior of tracking across all sessions of your app is still supported, but now we also enable tracking at the individual session level as well. To do this, simply add a string representing a unique session ID to the track() function (recommended to be a UUID4):
