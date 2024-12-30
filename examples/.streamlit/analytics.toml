@@ -1,0 +1,6 @@
+[analytics]
+enabled = false
+tracking_id = "32434543534"
+
+[storage]
+storage_type = "CSV"

@@ -10,7 +10,6 @@ from . import utils
 from .state import data
 
 
-@st.dialog("Streamlit-Analytics2", width="large")
 def show_results(data, reset_callback, unsafe_password=None):
     """Show analytics results in streamlit, asking for password if given."""
 

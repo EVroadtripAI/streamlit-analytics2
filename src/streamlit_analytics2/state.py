@@ -1,5 +1,7 @@
 import datetime
 
+# Dict that holds all analytics results. Note that this is persistent across users,
+# as modules are only imported once by a streamlit app.
 data = {"loaded_from_firestore": False}
 
 

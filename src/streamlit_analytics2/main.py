@@ -12,7 +12,7 @@ from typing import Any, Dict, Optional, Union
 import streamlit as st
 from streamlit import session_state as ss
 
-from . import display, firestore, utils, widgets
+from . import config, display, firestore, utils, widgets
 from . import wrappers as _wrap
 from .state import data, reset_data
 
@@ -23,11 +23,7 @@ logging.basicConfig(
     level=logging.INFO, format="streamlit-analytics2: %(levelname)s: %(message)s"
 )
 # Uncomment this during testing
-
-# Dict that holds all analytics results. Note that this is persistent across users,
-# as modules are only imported once by a streamlit app.
-
-# logging.info("SA2: Streamlit-analytics2 successfully imported")
+logging.info("SA2: Streamlit-analytics2 successfully imported")
 
 
 reset_data()
@@ -416,8 +412,19 @@ def stop_tracking(
     # Show analytics results in the streamlit app if `?analytics=on` is set in the URL.
     query_params = st.query_params
     if "analytics" in query_params and "on" in query_params["analytics"]:
-        st.write("---")
-        display.show_results(data, reset_data, unsafe_password)
+
+        @st.dialog("Streamlit-Analytics2", width="large")
+        def show_sa2(data, reset_data, unsafe_password):
+
+            tab1, tab2 = st.tabs(["Data", "Config"])
+
+            with tab1:
+                display.show_results(data, reset_data, unsafe_password)
+
+            with tab2:
+                config.show_config()
+
+        show_sa2(data, reset_data, unsafe_password)
 
 
 @contextmanager
