@@ -7,10 +7,10 @@ import pandas as pd
 import streamlit as st
 
 from . import utils
-from .state import data
+from .state import data  # noqa: F401
 
 
-def show_results(data, reset_callback, unsafe_password=None):
+def show_results(data, reset_callback, unsafe_password=None):  # noqa: F811
     """Show analytics results in streamlit, asking for password if given."""
 
     # Show header.

@@ -60,7 +60,7 @@ def load_analytics_config():
 
         return config
 
-    except Exception as e:
+    except Exception as e:  # noqa: F841
         # logger.error(f"Error loading configuration: {str(e)}")
         st.error("Error loading configuration. Using defaults.")
         return DEFAULT_CONFIG.copy()
@@ -73,9 +73,9 @@ def save_config(config):
         ensure_streamlit_dir()
         with open(path, "w") as file:
             toml.dump(config, file)
-        new_config = config
+        new_config = config  # noqa: F841
         # logger.info("Configuration saved successfully")
-    except Exception as e:
+    except Exception as e:  # noqa: F841
         # logger.error(f"Error saving configuration: {str(e)}")
         st.error("Failed to save configuration")
         raise
@@ -84,19 +84,19 @@ def save_config(config):
 def show_config():
     """Display and manage configuration"""
     st.title("Analytics Configuration")
-    st.markdown("""
+    st.markdown(
+        """
     This config page serves as a proof of concept for all SA2 existing features
-    and some that dont (like CSV)  
+    and some that dont exist yet (like CSV)\
     The Buttons do not currently do anything - please make a PR to help
-    implement them.  
-    To learn how to use all these features, please visit the [Wiki](https://github.com/444B/streamlit-analytics2/wiki)
-    In time it could serve to configure the application this way.  
+    implement them.\
+    To learn how to use all these features, please visit the [Wiki](https://github.com/444B/streamlit-analytics2/wiki) which could also do with some love
 
-    > This will create a .streamlit/analytics.toml in the directory that you ran streamlit  
+    > This will create a .streamlit/analytics.toml in the directory that you ran streamlit\
     > You can edit the values in the text file directly if its easier
 
-    """)
-
+    """
+    )
 
     # Load current config
     config = load_analytics_config()
@@ -145,7 +145,6 @@ def show_config():
     st.divider()
     session_id = st.text_input("Session ID", value=config["session"]["session_id"])
     st.divider()
-
 
     # Create new config from inputs
     new_config = {

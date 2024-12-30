@@ -5,10 +5,10 @@ from google.cloud import firestore
 from google.oauth2 import service_account
 from streamlit import session_state as ss
 
-from .state import data
+from .state import data  # noqa: F401
 
 
-def sanitize_data(data):
+def sanitize_data(data):  # noqa: F811
     if isinstance(data, dict):
         # Recursively sanitize dictionary keys
         return {str(k) if k else "": sanitize_data(v) for k, v in data.items() if k}
@@ -20,7 +20,7 @@ def sanitize_data(data):
 
 
 def load(
-    data,
+    data,  # noqa: F811
     service_account_json,
     collection_name,
     streamlit_secrets_firestore_key,
@@ -63,7 +63,7 @@ def load(
 
 
 def save(
-    data,
+    data,  # noqa: F811
     service_account_json,
     collection_name,
     streamlit_secrets_firestore_key,
