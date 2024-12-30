@@ -1,11 +1,10 @@
+import datetime
 
 import streamlit as st
 from streamlit import session_state as ss
-import datetime
 
 from . import utils
-from .state import data 
-
+from .state import data
 
 
 def checkbox(func):
@@ -249,4 +248,3 @@ def chat_input(func):
         return value
 
     return new_func
-

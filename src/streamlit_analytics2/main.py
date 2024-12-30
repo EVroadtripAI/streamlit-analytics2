@@ -12,7 +12,7 @@ from typing import Any, Dict, Optional, Union
 import streamlit as st
 from streamlit import session_state as ss
 
-from . import display, firestore, widgets, utils
+from . import display, firestore, utils, widgets
 from . import wrappers as _wrap
 from .state import data, reset_data
 
@@ -28,8 +28,6 @@ logging.basicConfig(
 # as modules are only imported once by a streamlit app.
 
 # logging.info("SA2: Streamlit-analytics2 successfully imported")
-
-
 
 
 reset_data()
@@ -86,7 +84,6 @@ _orig_sidebar_color_picker = st.sidebar.color_picker
 # _orig_sidebar_camera_input = st.sidebar.camera_input
 
 
-
 def update_session_stats(data_dict: Dict[str, Any]):
     """
     Update the session data with the current state.
@@ -124,7 +121,6 @@ def _track_user():
     """Track individual pageviews by storing user id to session state."""
     update_session_stats(data)
     update_session_stats(ss.session_data)
-
 
 
 def start_tracking(
@@ -280,7 +276,6 @@ def start_tracking(
     #     "file_uploader": _wrap.file_uploader,
     #     "color_picker": _wrap.value,
     # }
-    
 
     if verbose:
         logging.info("\nSA2: Tracking script execution with streamlit-analytics...")
@@ -361,7 +356,6 @@ def stop_tracking(
     # TODO: Maybe don't save on every iteration but on regular intervals in a background
     #   thread.
 
-    
     if (
         streamlit_secrets_firestore_key is not None
         and firestore_project_name is not None
@@ -489,6 +483,7 @@ def track(
             verbose=verbose,
             session_id=session_id,
         )
+
 
 if __name__ == "streamlit_analytics2.main":
     print("hello world!")

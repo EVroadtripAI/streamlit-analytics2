@@ -4,6 +4,7 @@ import streamlit as st
 from google.cloud import firestore
 from google.oauth2 import service_account
 from streamlit import session_state as ss
+
 from .state import data
 
 
@@ -92,6 +93,4 @@ def save(
     col.document("data").set(sanitized_data)  # creates if doesn't exist
     if session_id is not None:
         sanitized_session_data = sanitize_data(ss.session_data)
-        col.document(session_id).set(
-            sanitized_session_data
-        )  # creates if doesn't exist
+        col.document(session_id).set(sanitized_session_data)  # creates if doesn't exist

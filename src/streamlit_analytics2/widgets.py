@@ -27,7 +27,6 @@ def copy_original():
     _orig_chat_input = st.chat_input
     # _orig_searchbox = st_searchbox
 
-
     _orig_sidebar_button = st.sidebar.button
     _orig_sidebar_checkbox = st.sidebar.checkbox
     _orig_sidebar_radio = st.sidebar.radio
