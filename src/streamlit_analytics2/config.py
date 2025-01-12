@@ -174,7 +174,9 @@ def show_config():
     }
 
     st.subheader("Current Configuration")
-    st.write("This is the final JSON that will get parsed to TOML in .streamlit/analytics.toml")
+    st.write(
+        "This is the final JSON that will get parsed to TOML in .streamlit/analytics.toml"
+    )
     st.json(new_config)
 
     col1, col2 = st.columns(2)

@@ -70,13 +70,11 @@ def start_tracking(
     unsafe_password: Optional[str] = None,
     save_to_json: Optional[Union[str, Path]] = None,
     load_from_json: Optional[Union[str, Path]] = None,
-
     firestore_project_name: Optional[str] = None,
     firestore_collection_name: Optional[str] = None,
     firestore_document_name: Optional[str] = "counts",
     firestore_key_file: Optional[str] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
-
     session_id: Optional[str] = None,
     verbose=False,
 ):
@@ -117,7 +115,7 @@ def start_tracking(
             data,
             firestore_key_file,
             firestore_collection_name,
-            firestore_document_name, 
+            firestore_document_name,
             streamlit_secrets_firestore_key=None,
             firestore_project_name=None,
             session_id=session_id,
@@ -235,16 +233,13 @@ def stop_tracking(
     unsafe_password: Optional[str] = None,
     save_to_json: Optional[Union[str, Path]] = None,
     load_from_json: Optional[Union[str, Path]] = None,
-
     firestore_project_name: Optional[str] = None,
     firestore_collection_name: Optional[str] = None,
     firestore_document_name: Optional[str] = "counts",
     firestore_key_file: Optional[str] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
-
     session_id: Optional[str] = None,
     verbose=False,
-
 ):
     """
     Stop tracking user inputs to a streamlit app.
@@ -392,15 +387,14 @@ def track(
     unsafe_password: Optional[str] = None,
     save_to_json: Optional[Union[str, Path]] = None,
     load_from_json: Optional[Union[str, Path]] = None,
-
     firestore_project_name: Optional[str] = None,
     firestore_collection_name: Optional[str] = None,
     firestore_document_name: Optional[str] = "counts",
     firestore_key_file: Optional[str] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
-
     session_id: Optional[str] = None,
-    verbose=False,):
+    verbose=False,
+):
     """
     Context manager to start and stop tracking user inputs to a streamlit app.
 
@@ -440,7 +434,7 @@ def track(
         stop_tracking(
             unsafe_password=unsafe_password,
             firestore_collection_name=firestore_collection_name,
-            firestore_document_name=firestore_document_name, 
+            firestore_document_name=firestore_document_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
             session_id=session_id,
