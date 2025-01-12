@@ -1,12 +1,9 @@
 
 import streamlit as st 
 import streamlit_analytics2 as streamlit_analytics
-import os
-cwd = os.getcwd()
 
 tab1, tab2 = st.tabs(["Classic", "Advanced"])
 
-print(cwd)
 
 # classic firestore load
 with tab1:

@@ -20,12 +20,13 @@ DEFAULT_CONFIG = {
         "load_from_json": "path/to/file.json",
     },
     "logs": {"verbose": False},
-    "access": {"unsafe_password": "test123"},
+    "access": {"unsafe_password": "hunter2"},
     "firestore": {
         "enabled": False,
         "firestore_key_file": "firebase-key.json",
         "firestore_project_name": "",
-        "firestore_collection_name": "data",
+        "firestore_collection_name": "streamlit_analytics2",
+        "firestore_document_name": "data",
         "streamlit_secrets_firestore_key": "",
     },
     "session": {"session_id": ""},
@@ -137,6 +138,10 @@ def show_config():
         "Firestore Collection Name",
         value=config["firestore"]["firestore_collection_name"],
     )
+    firestore_document = st.text_input(
+        "Firestore Document Name",
+        value=config["firestore"]["firestore_document_name"],
+    )
     firestore_secret_key = st.text_input(
         "Firestore Secret Key",
         value=config["firestore"]["streamlit_secrets_firestore_key"],
@@ -162,13 +167,14 @@ def show_config():
             "firestore_key_file": firestore_key_file,
             "firestore_project_name": firestore_project,
             "firestore_collection_name": firestore_collection,
+            "firestore_document_name": firestore_document,
             "streamlit_secrets_firestore_key": firestore_secret_key,
         },
         "session": {"session_id": session_id},
     }
 
     st.subheader("Current Configuration")
-    st.write("This is the final JSON that will get parsed to TOML")
+    st.write("This is the final JSON that will get parsed to TOML in .streamlit/analytics.toml")
     st.json(new_config)
 
     col1, col2 = st.columns(2)
