@@ -67,13 +67,18 @@ def _track_user():
 
 
 def start_tracking(
-    verbose: bool = False,
-    firestore_key_file: Optional[str] = None,
-    firestore_collection_name: str = "data",
+    unsafe_password: Optional[str] = None,
+    save_to_json: Optional[Union[str, Path]] = None,
     load_from_json: Optional[Union[str, Path]] = None,
-    streamlit_secrets_firestore_key: Optional[str] = None,
+
     firestore_project_name: Optional[str] = None,
+    firestore_collection_name: Optional[str] = None,
+    firestore_document_name: Optional[str] = "counts",
+    firestore_key_file: Optional[str] = None,
+    streamlit_secrets_firestore_key: Optional[str] = None,
+
     session_id: Optional[str] = None,
+    verbose=False,
 ):
     """
     Start tracking user inputs to a streamlit app.
@@ -93,6 +98,7 @@ def start_tracking(
             data=data,
             service_account_json=None,
             collection_name=firestore_collection_name,
+            document_name=firestore_document_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
             session_id=session_id,  # This will load both global and session data
@@ -111,6 +117,7 @@ def start_tracking(
             data,
             firestore_key_file,
             firestore_collection_name,
+            firestore_document_name, 
             streamlit_secrets_firestore_key=None,
             firestore_project_name=None,
             session_id=session_id,
@@ -227,13 +234,17 @@ def start_tracking(
 def stop_tracking(
     unsafe_password: Optional[str] = None,
     save_to_json: Optional[Union[str, Path]] = None,
-    firestore_key_file: Optional[str] = None,
-    firestore_collection_name: str = "data",
-    verbose: bool = False,
     load_from_json: Optional[Union[str, Path]] = None,
-    streamlit_secrets_firestore_key: Optional[str] = None,
+
     firestore_project_name: Optional[str] = None,
+    firestore_collection_name: Optional[str] = None,
+    firestore_document_name: Optional[str] = "counts",
+    firestore_key_file: Optional[str] = None,
+    streamlit_secrets_firestore_key: Optional[str] = None,
+
     session_id: Optional[str] = None,
+    verbose=False,
+
 ):
     """
     Stop tracking user inputs to a streamlit app.
@@ -315,6 +326,7 @@ def stop_tracking(
             data=data,
             service_account_json=None,
             collection_name=firestore_collection_name,
+            document_name=firestore_document_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
             session_id=session_id,  # This will save both global and session data
@@ -333,6 +345,7 @@ def stop_tracking(
             data,
             firestore_key_file,
             firestore_collection_name,
+            firestore_document_name,
             streamlit_secrets_firestore_key=None,
             firestore_project_name=None,
             session_id=session_id,
@@ -378,14 +391,16 @@ def stop_tracking(
 def track(
     unsafe_password: Optional[str] = None,
     save_to_json: Optional[Union[str, Path]] = None,
-    firestore_key_file: Optional[str] = None,
-    firestore_collection_name: str = "data",
-    verbose=False,
     load_from_json: Optional[Union[str, Path]] = None,
-    streamlit_secrets_firestore_key: Optional[str] = None,
+
     firestore_project_name: Optional[str] = None,
+    firestore_collection_name: Optional[str] = None,
+    firestore_document_name: Optional[str] = "counts",
+    firestore_key_file: Optional[str] = None,
+    streamlit_secrets_firestore_key: Optional[str] = None,
+
     session_id: Optional[str] = None,
-):
+    verbose=False,):
     """
     Context manager to start and stop tracking user inputs to a streamlit app.
 
@@ -398,20 +413,22 @@ def track(
         and firestore_project_name is not None
     ):
         start_tracking(
-            verbose=verbose,
             firestore_collection_name=firestore_collection_name,
+            firestore_document_name=firestore_document_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
             session_id=session_id,
+            verbose=verbose,
         )
 
     else:
         start_tracking(
-            verbose=verbose,
             firestore_key_file=firestore_key_file,
             firestore_collection_name=firestore_collection_name,
+            firestore_document_name=firestore_document_name,
             load_from_json=load_from_json,
             session_id=session_id,
+            verbose=verbose,
         )
     # Yield here to execute the code in the with statement. This will call the wrappers
     # above, which track all inputs.
@@ -423,6 +440,7 @@ def track(
         stop_tracking(
             unsafe_password=unsafe_password,
             firestore_collection_name=firestore_collection_name,
+            firestore_document_name=firestore_document_name, 
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
             session_id=session_id,
@@ -434,6 +452,7 @@ def track(
             save_to_json=save_to_json,
             firestore_key_file=firestore_key_file,
             firestore_collection_name=firestore_collection_name,
+            firestore_document_name=firestore_document_name,
             verbose=verbose,
             session_id=session_id,
         )

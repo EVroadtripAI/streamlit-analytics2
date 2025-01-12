@@ -23,6 +23,7 @@ def load(
     data,  # noqa: F811
     service_account_json,
     collection_name,
+    document_name,
     streamlit_secrets_firestore_key,
     firestore_project_name,
     session_id=None,
@@ -38,13 +39,13 @@ def load(
         creds = service_account.Credentials.from_service_account_info(key_dict)
         db = firestore.Client(credentials=creds, project=firestore_project_name)
         col = db.collection(collection_name)
-        firestore_data = col.document("data").get().to_dict()
+        firestore_data = col.document(document_name).get().to_dict()
         if session_id is not None:
             firestore_session_data = col.document(session_id).get().to_dict()
     else:
         db = firestore.Client.from_service_account_json(service_account_json)
         col = db.collection(collection_name)
-        firestore_data = col.document("data").get().to_dict()
+        firestore_data = col.document(document_name).get().to_dict()
         if session_id is not None:
             firestore_session_data = col.document(session_id).get().to_dict()
 
@@ -66,6 +67,7 @@ def save(
     data,  # noqa: F811
     service_account_json,
     collection_name,
+    document_name,
     streamlit_secrets_firestore_key,
     firestore_project_name,
     session_id=None,
@@ -84,13 +86,10 @@ def save(
         db = firestore.Client.from_service_account_json(service_account_json)
     col = db.collection(collection_name)
     # TODO pass user set argument via config screen for the name of document
-    # currently hard coded to be "data"
-
-    # Log the data being saved
-    # logging.debug("Data being saved to Firestore: %s", sanitized_data)
+    # currently hard coded to be "counts"
 
     # Attempt to save to Firestore
-    col.document("data").set(sanitized_data)  # creates if doesn't exist
+    col.document(document_name).set(sanitized_data)  # creates if doesn't exist
     if session_id is not None:
         sanitized_session_data = sanitize_data(ss.session_data)
         col.document(session_id).set(sanitized_session_data)  # creates if doesn't exist
