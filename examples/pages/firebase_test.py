@@ -12,9 +12,9 @@ with tab1:
     if st.button("Test Classic"):
 
         with streamlit_analytics.track(
-            firestore_document_name="datalyttics",
             firestore_key_file="pages/firebase-key.json",
-            firestore_collection_name="no_doc_name3",
+            firestore_collection_name="streamlit_analytics2",
+            firestore_document_name="data",
             firestore_project_name="streamlit-analtyics2",
             verbose=True,
         ):
