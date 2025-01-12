@@ -26,7 +26,7 @@ DEFAULT_CONFIG = {
         "firestore_key_file": "firebase-key.json",
         "firestore_project_name": "",
         "firestore_collection_name": "streamlit_analytics2",
-        "firestore_document_name": "data",
+        # "firestore_document_name": "data",
         "streamlit_secrets_firestore_key": "",
     },
     "session": {"session_id": ""},
@@ -138,10 +138,10 @@ def show_config():
         "Firestore Collection Name",
         value=config["firestore"]["firestore_collection_name"],
     )
-    firestore_document = st.text_input(
-        "Firestore Document Name",
-        value=config["firestore"]["firestore_document_name"],
-    )
+    # firestore_document = st.text_input(
+    #     "Firestore Document Name",
+    #     value=config["firestore"]["firestore_document_name"],
+    # )
     firestore_secret_key = st.text_input(
         "Firestore Secret Key",
         value=config["firestore"]["streamlit_secrets_firestore_key"],
@@ -167,7 +167,7 @@ def show_config():
             "firestore_key_file": firestore_key_file,
             "firestore_project_name": firestore_project,
             "firestore_collection_name": firestore_collection,
-            "firestore_document_name": firestore_document,
+            # "firestore_document_name": firestore_document,
             "streamlit_secrets_firestore_key": firestore_secret_key,
         },
         "session": {"session_id": session_id},
