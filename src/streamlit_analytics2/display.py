@@ -54,7 +54,7 @@ def show_results(data, reset_callback, unsafe_password=None):  # noqa: F811
             utils.format_seconds(data["total_time_seconds"]),
             help=(
                 "Total usage from all users from run to last widget interaction"
-            ),
+            ),  # noqa: E501
         )
         st.write("")
 
@@ -132,7 +132,9 @@ def show_results(data, reset_callback, unsafe_password=None):  # noqa: F811
                         {
                             "widget_name": i,
                             "selected_value": list(data["widgets"][i].keys()),
-                            "number_of_interactions": data["widgets"][i].values(),  # noqa: E501
+                            "number_of_interactions": data["widgets"][
+                                i
+                            ].values(),  # noqa: E501
                         }
                     ).sort_values(by="number_of_interactions", ascending=False)
                 )

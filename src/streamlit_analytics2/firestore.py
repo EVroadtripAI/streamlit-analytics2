@@ -11,7 +11,9 @@ from .state import data  # noqa: F401
 def sanitize_data(data):  # noqa: F811
     if isinstance(data, dict):
         # Recursively sanitize dictionary keys
-        return {str(k) if k else "": sanitize_data(v) for k, v in data.items() if k}  # noqa: E501
+        return {
+            str(k) if k else "": sanitize_data(v) for k, v in data.items() if k
+        }  # noqa: E501
     elif isinstance(data, list):
         # Apply sanitization to elements in lists
         return [sanitize_data(item) for item in data]

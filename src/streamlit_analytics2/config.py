@@ -108,7 +108,8 @@ def show_config():
 
     # Configuration inputs for streamlit_analytics2
     enabled = st.checkbox(
-        "Enable Streamlit_Analytics2", value=config["streamlit_analytics2"]["enabled"]  # noqa: E501
+        "Enable Streamlit_Analytics2",
+        value=config["streamlit_analytics2"]["enabled"],
     )
     st.divider()
     storage_save = st.checkbox("Store Data", value=config["storage"]["save"])
@@ -118,25 +119,33 @@ def show_config():
         horizontal=True,
         index=0 if config["storage"]["type"] == "json" else 1,
     )
-    save_path = st.text_input("Save File Path", value=config["storage"]["save_to_json"])  # noqa: E501
+    save_path = st.text_input(
+        "Save File Path", value=config["storage"]["save_to_json"]
+    )  # noqa: E501
     load_path = st.text_input(
         "Load File Path", value=config["storage"]["load_from_json"]
     )
     st.divider()
-    verbose_logging = st.checkbox("Verbose Logging", value=config["logs"]["verbose"])  # noqa: E501
+    verbose_logging = st.checkbox(
+        "Verbose Logging", value=config["logs"]["verbose"]
+    )  # noqa: E501
     st.divider()
     password = st.text_input(
-        "Access Password", value=config["access"]["unsafe_password"], type="password"  # noqa: E501
+        "Access Password",
+        value=config["access"]["unsafe_password"],
+        type="password",
     )
     st.divider()
     firestore_enabled = st.checkbox(
         "Enable Firestore", value=config["firestore"]["enabled"]
     )
     firestore_key_file = st.text_input(
-        "Firestore Key File Path", value=config["firestore"]["firestore_key_file"]  # noqa: E501
+        "Firestore Key File Path",
+        value=config["firestore"]["firestore_key_file"],
     )
     firestore_project = st.text_input(
-        "Firestore Project Name", value=config["firestore"]["firestore_project_name"]  # noqa: E501
+        "Firestore Project Name",
+        value=config["firestore"]["firestore_project_name"],
     )
     firestore_collection = st.text_input(
         "Firestore Collection Name",
@@ -152,7 +161,9 @@ def show_config():
         type="password",
     )
     st.divider()
-    session_id = st.text_input("Session ID", value=config["session"]["session_id"])  # noqa: E501
+    session_id = st.text_input(
+        "Session ID", value=config["session"]["session_id"]
+    )  # noqa: E501
     st.divider()
 
     # Create new config from inputs
