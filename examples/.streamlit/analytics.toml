@@ -17,8 +17,7 @@ unsafe_password = "hunter2"
 enabled = false
 firestore_key_file = "firebase-key.json"
 firestore_project_name = ""
-firestore_collection_name = "streamlit_analytics2"
-firestore_document_name = "data"
+firestore_collection_name = "data"
 streamlit_secrets_firestore_key = ""
 
 [session]

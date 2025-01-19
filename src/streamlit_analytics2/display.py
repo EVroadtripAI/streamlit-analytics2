@@ -59,8 +59,14 @@ def show_results(data, reset_callback, unsafe_password=None):  # noqa: F811
         st.write("")
 
         df = pd.DataFrame(data["per_day"])
+        #check if more than one year of data exists
+        if pd.to_datetime(df["days"]).dt.year.nunique()>1:
+            x_axis_ticks="yearmonthdate(days):O"
+        else:
+            x_axis_ticks="monthdate(days):O"
+            
         base = alt.Chart(df).encode(
-            x=alt.X("monthdate(days):O", axis=alt.Axis(title="", grid=True))
+            x=alt.X(x_axis_ticks, axis=alt.Axis(title="", grid=True))
         )
         line1 = base.mark_line(point=True, stroke="#5276A7").encode(
             alt.Y(

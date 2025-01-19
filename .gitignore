@@ -3,6 +3,7 @@
 
 # streamlit specific
 *secrets.toml
+config.toml
 analytics.toml
 
 # StreamlitAnalytics2 test specific
