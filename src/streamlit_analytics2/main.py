@@ -21,7 +21,8 @@ from .state import data, reset_data
 # TODO look into https://github.com/444B/streamlit-analytics2/pull/119 to
 # integrate
 # logging.basicConfig(
-#     level=logging.INFO, format="streamlit-analytics2: %(levelname)s: %(message)s"
+#     level=logging.INFO,
+#     format="streamlit-analytics2: %(levelname)s: %(message)s"
 # )
 # Uncomment this during testing
 # logging.info("SA2: Streamlit-analytics2 successfully imported")
@@ -99,7 +100,7 @@ def start_tracking(
             document_name=firestore_document_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
-            session_id=session_id,  # This will load both global and session data
+            session_id=session_id,  # This will load global and session data
         )
         data["loaded_from_firestore"] = True
         if verbose:
@@ -145,8 +146,10 @@ def start_tracking(
         except FileNotFoundError:
             if verbose:
                 logging.warning(
-                    f"SA2: File {load_from_json} not found, proceeding with empty data."
+                    f"SA2: File {load_from_json} not found"
                 )
+                logging.warning("Proceeding with empty data.")
+
         except Exception as e:
             # Catch-all for any other exceptions, log the error
             logging.error(f"SA2: Error loading data from {load_from_json}: {e}")
@@ -185,21 +188,21 @@ def start_tracking(
     st.chat_input = _wrap.chat_input(_orig_chat_input)
     # st_searchbox = _wrap.searchbox(_orig_searchbox)
 
-    st.sidebar.button = _wrap.button(_orig_sidebar_button)  # type: ignore
-    st.sidebar.checkbox = _wrap.checkbox(_orig_sidebar_checkbox)  # type: ignore
-    st.sidebar.radio = _wrap.select(_orig_sidebar_radio)  # type: ignore
-    st.sidebar.selectbox = _wrap.select(_orig_sidebar_selectbox)  # type: ignore
-    st.sidebar.multiselect = _wrap.multiselect(_orig_sidebar_multiselect)  # type: ignore
-    st.sidebar.slider = _wrap.value(_orig_sidebar_slider)  # type: ignore
-    st.sidebar.select_slider = _wrap.select(_orig_sidebar_select_slider)  # type: ignore
-    st.sidebar.text_input = _wrap.value(_orig_sidebar_text_input)  # type: ignore
-    st.sidebar.number_input = _wrap.value(_orig_sidebar_number_input)  # type: ignore
-    st.sidebar.text_area = _wrap.value(_orig_sidebar_text_area)  # type: ignore
-    st.sidebar.date_input = _wrap.value(_orig_sidebar_date_input)  # type: ignore
-    st.sidebar.time_input = _wrap.value(_orig_sidebar_time_input)  # type: ignore
-    st.sidebar.file_uploader = _wrap.file_uploader(_orig_sidebar_file_uploader)  # type: ignore
-    st.sidebar.color_picker = _wrap.value(_orig_sidebar_color_picker)  # type: ignore
-    # st.sidebar.st_searchbox = _wrap.searchbox(_orig_sidebar_searchbox)  # type: ignore
+    st.sidebar.button = _wrap.button(_orig_sidebar_button)
+    st.sidebar.checkbox = _wrap.checkbox(_orig_sidebar_checkbox)
+    st.sidebar.radio = _wrap.select(_orig_sidebar_radio)
+    st.sidebar.selectbox = _wrap.select(_orig_sidebar_selectbox)
+    st.sidebar.multiselect = _wrap.multiselect(_orig_sidebar_multiselect)
+    st.sidebar.slider = _wrap.value(_orig_sidebar_slider)
+    st.sidebar.select_slider = _wrap.select(_orig_sidebar_select_slider)
+    st.sidebar.text_input = _wrap.value(_orig_sidebar_text_input)
+    st.sidebar.number_input = _wrap.value(_orig_sidebar_number_input)
+    st.sidebar.text_area = _wrap.value(_orig_sidebar_text_area)
+    st.sidebar.date_input = _wrap.value(_orig_sidebar_date_input)
+    st.sidebar.time_input = _wrap.value(_orig_sidebar_time_input)
+    st.sidebar.file_uploader = _wrap.file_uploader(_orig_sidebar_file_uploader)
+    st.sidebar.color_picker = _wrap.value(_orig_sidebar_color_picker)
+    # st.sidebar.st_searchbox = _wrap.searchbox(_orig_sidebar_searchbox)
 
     # new elements, testing
     # st.sidebar.download_button = _wrap.value(_orig_sidebar_download_button)
@@ -226,7 +229,7 @@ def start_tracking(
     # }
 
     if verbose:
-        logging.info("\nSA2: Tracking script execution with streamlit-analytics...")
+        logging.info("\nSA2:  streamlit-analytics2 verbose logging")
 
 
 def stop_tracking(
@@ -244,8 +247,9 @@ def stop_tracking(
     """
     Stop tracking user inputs to a streamlit app.
 
-    Should be called after `streamlit-analytics.start_tracking()`. This method also
-    shows the analytics results below your app if you attach `?analytics=on` to the URL.
+    Should be called after `streamlit-analytics.start_tracking()`.
+    This method also shows the analytics results below your app if you attach
+    `?analytics=on` to the URL.
     """
 
     if verbose:
@@ -302,8 +306,8 @@ def stop_tracking(
     # st.sidebar.camera_input = _orig_sidebar_camera_input
     # st.sidebar.searchbox = _orig_sidebar_searchbox
     # Save count data to firestore.
-    # TODO: Maybe don't save on every iteration but on regular intervals in a background
-    #   thread.
+    # TODO: Maybe don't save on every iteration but on regular intervals in a
+    # background thread.
 
     if (
         streamlit_secrets_firestore_key is not None
@@ -324,7 +328,7 @@ def stop_tracking(
             document_name=firestore_document_name,
             streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
             firestore_project_name=firestore_project_name,
-            session_id=session_id,  # This will save both global and session data
+            session_id=session_id,  # This will save global and session data
         )
 
     elif (
@@ -349,7 +353,8 @@ def stop_tracking(
     # Dump the data to json file if `save_to_json` is set.
     # TODO: Make sure this is not locked if writing from multiple threads.
 
-    # Assuming 'data' is your data to be saved and 'save_to_json' is the path to your json file.
+    # Assuming 'data' is your data to be saved and 'save_to_json' is the path
+    # to your json file.
     if save_to_json is not None:
         # Create a Path object for the file
         file_path = Path(save_to_json)
@@ -364,7 +369,8 @@ def stop_tracking(
         if verbose:
             print("Storing results to file:", save_to_json)
 
-    # Show analytics results in the streamlit app if `?analytics=on` is set in the URL.
+    # Show analytics results in the streamlit app if `?analytics=on` is set in
+    # the URL.
     query_params = st.query_params
     if "analytics" in query_params and "on" in query_params["analytics"]:
 
@@ -398,7 +404,7 @@ def track(
     """
     Context manager to start and stop tracking user inputs to a streamlit app.
 
-    To use this, wrap all calls to streamlit in `with streamlit_analytics.track():`.
+    To use this, make calls to streamlit in `with streamlit_analytics.track():`.
     This also shows the analytics results below your app if you attach
     `?analytics=on` to the URL.
     """
@@ -424,8 +430,8 @@ def track(
             session_id=session_id,
             verbose=verbose,
         )
-    # Yield here to execute the code in the with statement. This will call the wrappers
-    # above, which track all inputs.
+    # Yield here to execute the code in the with statement. This will call the
+    # wrappers above, which track all inputs.
     yield
     if (
         streamlit_secrets_firestore_key is not None
@@ -459,8 +465,8 @@ if __name__ == "streamlit_analytics2.main":
     # TODO need to fix the scope for this function call and then we can move
     # these variable assignments to widgets.py
 
-    # Store original streamlit functions. They will be monkey-patched with some wrappers
-    # in `start_tracking` (see wrapper functions below).
+    # Store original streamlit functions. They will be monkey-patched with some
+    # wrappers in `start_tracking` (see wrapper functions below).
     _orig_button = st.button
     _orig_checkbox = st.checkbox
     _orig_radio = st.radio

@@ -2,8 +2,8 @@
 
 
 # def copy_original():
-#     # Store original streamlit functions. They will be monkey-patched with some wrappers
-#     # in `start_tracking` (see wrapper functions below).
+#     # Store original streamlit functions. They will be monkey-patched with
+#       some wrappers in `start_tracking` (see wrapper functions below).
 #     _orig_button = st.button
 #     _orig_checkbox = st.checkbox
 #     _orig_radio = st.radio
@@ -75,21 +75,21 @@
 #     st.chat_input = _wrap.chat_input(_orig_chat_input)
 #     # st_searchbox = _wrap.searchbox(_orig_searchbox)
 
-#     st.sidebar.button = _wrap.button(_orig_sidebar_button)  # type: ignore
-#     st.sidebar.checkbox = _wrap.checkbox(_orig_sidebar_checkbox)  # type: ignore
-#     st.sidebar.radio = _wrap.select(_orig_sidebar_radio)  # type: ignore
-#     st.sidebar.selectbox = _wrap.select(_orig_sidebar_selectbox)  # type: ignore
-#     st.sidebar.multiselect = _wrap.multiselect(_orig_sidebar_multiselect)  # type: ignore
-#     st.sidebar.slider = _wrap.value(_orig_sidebar_slider)  # type: ignore
-#     st.sidebar.select_slider = _wrap.select(_orig_sidebar_select_slider)  # type: ignore
-#     st.sidebar.text_input = _wrap.value(_orig_sidebar_text_input)  # type: ignore
-#     st.sidebar.number_input = _wrap.value(_orig_sidebar_number_input)  # type: ignore
-#     st.sidebar.text_area = _wrap.value(_orig_sidebar_text_area)  # type: ignore
-#     st.sidebar.date_input = _wrap.value(_orig_sidebar_date_input)  # type: ignore
-#     st.sidebar.time_input = _wrap.value(_orig_sidebar_time_input)  # type: ignore
-#     st.sidebar.file_uploader = _wrap.file_uploader(_orig_sidebar_file_uploader)  # type: ignore
-#     st.sidebar.color_picker = _wrap.value(_orig_sidebar_color_picker)  # type: ignore
-#     # st.sidebar.st_searchbox = _wrap.searchbox(_orig_sidebar_searchbox)  # type: ignore
+#     st.sidebar.button = _wrap.button(_orig_sidebar_button)
+#     st.sidebar.checkbox = _wrap.checkbox(_orig_sidebar_checkbox)
+#     st.sidebar.radio = _wrap.select(_orig_sidebar_radio)
+#     st.sidebar.selectbox = _wrap.select(_orig_sidebar_selectbox)
+#     st.sidebar.multiselect = _wrap.multiselect(_orig_sidebar_multiselect)
+#     st.sidebar.slider = _wrap.value(_orig_sidebar_slider)
+#     st.sidebar.select_slider = _wrap.select(_orig_sidebar_select_slider)
+#     st.sidebar.text_input = _wrap.value(_orig_sidebar_text_input)
+#     st.sidebar.number_input = _wrap.value(_orig_sidebar_number_input)
+#     st.sidebar.text_area = _wrap.value(_orig_sidebar_text_area)
+#     st.sidebar.date_input = _wrap.value(_orig_sidebar_date_input)
+#     st.sidebar.time_input = _wrap.value(_orig_sidebar_time_input)
+#     st.sidebar.file_uploader= _wrap.file_uploader(_orig_sidebar_file_uploader)
+#     st.sidebar.color_picker = _wrap.value(_orig_sidebar_color_picker)
+#     # st.sidebar.st_searchbox = _wrap.searchbox(_orig_sidebar_searchbox)
 
 #     # new elements, testing
 #     # st.sidebar.download_button = _wrap.value(_orig_sidebar_download_button)
@@ -162,5 +162,5 @@
 #     # st.sidebar.camera_input = _orig_sidebar_camera_input
 #     # st.sidebar.searchbox = _orig_sidebar_searchbox
 #     # Save data to firestore.
-#     # TODO: Maybe don't save on every iteration but on regular intervals in a background
-#     #   thread.
+#     # TODO: Maybe don't save on every iteration but on regular intervals in a
+#     # background thread.

@@ -73,10 +73,10 @@ def file_uploader(func):
         # Update aggregate data
         if label not in data["widgets"]:
             data["widgets"][label] = 0
-        # TODO: Right now this doesn't track when multiple files are uploaded one after
-        #   another. Maybe compare files directly (but probably not very clever to
-        #   store in session state) or hash them somehow and check if a different file
-        #   was uploaded.
+        # TODO: Right now this doesn't track when multiple files are uploaded
+        # one after another. Maybe compare files directly (but probably not
+        # very clever to store in session state) or hash them somehow and check
+        # if a different file was uploaded.
         if uploaded_file and not st.session_state.state_dict.get(label, None):
             data["widgets"][label] += 1
 
@@ -94,7 +94,8 @@ def file_uploader(func):
 
 def select(func):
     """
-    Wrap a streamlit function that returns one selected element out of multiple options,
+    Wrap a streamlit function that returns one selected element out of multiple
+    options
     e.g. st.radio, st.selectbox, st.select_slider.
     """
 
@@ -131,8 +132,8 @@ def select(func):
 
 def multiselect(func):
     """
-    Wrap a streamlit function that returns multiple selected elements out of multiple
-    options, e.g. st.multiselect.
+    Wrap a streamlit function that returns multiple selected elements out of
+    multiple options, e.g. st.multiselect.
     """
 
     def new_func(label, options, *args, **kwargs):
@@ -171,7 +172,7 @@ def multiselect(func):
 
 def value(func):
     """
-    Wrap a streamlit function that returns a single value (str/int/float/datetime/...),
+    Wrap a streamlit function that returns a single value,
     e.g. st.slider, st.text_input, st.number_input, st.text_area, st.date_input,
     st.time_input, st.color_picker.
     """
@@ -217,7 +218,7 @@ def value(func):
 
 def chat_input(func):
     """
-    Wrap a streamlit function that returns a single value (str/int/float/datetime/...),
+    Wrap a streamlit function that returns a single value,
     e.g. st.slider, st.text_input, st.number_input, st.text_area, st.date_input,
     st.time_input, st.color_picker.
     """
