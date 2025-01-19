@@ -53,14 +53,20 @@ def show_results(data, reset_callback, unsafe_password=None):  # noqa: F811
             "Time spent",
             utils.format_seconds(data["total_time_seconds"]),
             help=(
-                "Time from initial page load to last widget interaction, summed over all users."
-            ),
+                "Total usage from all users from run to last widget interaction"
+            ),  # noqa: E501
         )
         st.write("")
 
         df = pd.DataFrame(data["per_day"])
+        # check if more than one year of data exists
+        if pd.to_datetime(df["days"]).dt.year.nunique() > 1:
+            x_axis_ticks = "yearmonthdate(days):O"
+        else:
+            x_axis_ticks = "monthdate(days):O"
+
         base = alt.Chart(df).encode(
-            x=alt.X("monthdate(days):O", axis=alt.Axis(title="", grid=True))
+            x=alt.X(x_axis_ticks, axis=alt.Axis(title="", grid=True))
         )
         line1 = base.mark_line(point=True, stroke="#5276A7").encode(
             alt.Y(
@@ -108,7 +114,8 @@ def show_results(data, reset_callback, unsafe_password=None):  # noqa: F811
             changes, not every time streamlit runs the script.</sub>
             <br>
             If you would like to improve the way the below metrics are
-            displayed, please open an issue/PR on [streamlit-analytics2](https://github.com/444B/streamlit-analytics2)
+            displayed, please open an issue/PR on
+            [streamlit-analytics2](https://github.com/444B/streamlit-analytics2)
             with a clear suggestion
             """,
             unsafe_allow_html=True,
@@ -125,7 +132,9 @@ def show_results(data, reset_callback, unsafe_password=None):  # noqa: F811
                         {
                             "widget_name": i,
                             "selected_value": list(data["widgets"][i].keys()),
-                            "number_of_interactions": data["widgets"][i].values(),
+                            "number_of_interactions": data["widgets"][
+                                i
+                            ].values(),  # noqa: E501
                         }
                     ).sort_values(by="number_of_interactions", ascending=False)
                 )
@@ -155,10 +164,10 @@ def show_results(data, reset_callback, unsafe_password=None):  # noqa: F811
                 "Continue?",
                 [
                     "No idea what I'm doing here",
-                    "I'm absolutely sure that I want to reset the results",
+                    "I'm sure that I want to reset the results",
                 ],
             )
-            if reset_prompt == "I'm absolutely sure that I want to reset the results":
+            if reset_prompt == "I'm sure that I want to reset the results":
                 reset_clicked = st.button("Click here to reset")
                 if reset_clicked:
                     reset_callback()

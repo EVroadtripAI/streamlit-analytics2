@@ -49,9 +49,15 @@ def session_data_reset() -> Dict[str, Any]:
     output["total_pageviews"] = 0
     output["total_script_runs"] = 0
     output["total_time_seconds"] = 0
-    output["per_day"] = {"days": [str(yesterday)], "pageviews": [0], "script_runs": [0]}
+    output["per_day"] = {
+        "days": [str(yesterday)],
+        "pageviews": [0],
+        "script_runs": [0],
+    }
     output["widgets"] = {}
-    output["start_time"] = datetime.datetime.now().strftime("%d %b %Y, %H:%M:%S")
+    output["start_time"] = datetime.datetime.now().strftime(
+        "%d %b %Y, %H:%M:%S"
+    )  # noqa: E501
 
     return output
 

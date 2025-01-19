@@ -45,7 +45,8 @@ def load_analytics_config():
 
     try:
         if not os.path.exists(path):
-            # logger.warning("Configuration file not found. Creating with defaults.")
+            # logger.warning("Configuration file not found.
+            # Creating with defaults.")
             ensure_streamlit_dir()
             save_config(DEFAULT_CONFIG)
             return DEFAULT_CONFIG.copy()
@@ -55,7 +56,8 @@ def load_analytics_config():
 
         # Check if file is empty or missing required sections
         if not config or "streamlit_analytics2" not in config:
-            # logger.warning("Invalid configuration found. Resetting to defaults.")
+            # logger.warning("Invalid configuration found.
+            # Resetting to defaults.")
             save_config(DEFAULT_CONFIG)
             return DEFAULT_CONFIG.copy()
 
@@ -91,9 +93,11 @@ def show_config():
     and some that dont exist yet (like CSV)\
     The Buttons do not currently do anything - please make a PR to help
     implement them.\
-    To learn how to use all these features, please visit the [Wiki](https://github.com/444B/streamlit-analytics2/wiki) which could also do with some love
+    To learn how to use all these features, please visit the
+    [Wiki](https://github.com/444B/streamlit-analytics2/wiki)
 
-    > This will create a .streamlit/analytics.toml in the directory that you ran streamlit\
+    > This will create a .streamlit/analytics.toml in the directory that you
+    > ran `streamlit run ...`\
     > You can edit the values in the text file directly if its easier
 
     """
@@ -104,7 +108,8 @@ def show_config():
 
     # Configuration inputs for streamlit_analytics2
     enabled = st.checkbox(
-        "Enable Streamlit_Analytics2", value=config["streamlit_analytics2"]["enabled"]
+        "Enable Streamlit_Analytics2",
+        value=config["streamlit_analytics2"]["enabled"],
     )
     st.divider()
     storage_save = st.checkbox("Store Data", value=config["storage"]["save"])
@@ -114,25 +119,33 @@ def show_config():
         horizontal=True,
         index=0 if config["storage"]["type"] == "json" else 1,
     )
-    save_path = st.text_input("Save File Path", value=config["storage"]["save_to_json"])
+    save_path = st.text_input(
+        "Save File Path", value=config["storage"]["save_to_json"]
+    )  # noqa: E501
     load_path = st.text_input(
         "Load File Path", value=config["storage"]["load_from_json"]
     )
     st.divider()
-    verbose_logging = st.checkbox("Verbose Logging", value=config["logs"]["verbose"])
+    verbose_logging = st.checkbox(
+        "Verbose Logging", value=config["logs"]["verbose"]
+    )  # noqa: E501
     st.divider()
     password = st.text_input(
-        "Access Password", value=config["access"]["unsafe_password"], type="password"
+        "Access Password",
+        value=config["access"]["unsafe_password"],
+        type="password",
     )
     st.divider()
     firestore_enabled = st.checkbox(
         "Enable Firestore", value=config["firestore"]["enabled"]
     )
     firestore_key_file = st.text_input(
-        "Firestore Key File Path", value=config["firestore"]["firestore_key_file"]
+        "Firestore Key File Path",
+        value=config["firestore"]["firestore_key_file"],
     )
     firestore_project = st.text_input(
-        "Firestore Project Name", value=config["firestore"]["firestore_project_name"]
+        "Firestore Project Name",
+        value=config["firestore"]["firestore_project_name"],
     )
     firestore_collection = st.text_input(
         "Firestore Collection Name",
@@ -148,7 +161,9 @@ def show_config():
         type="password",
     )
     st.divider()
-    session_id = st.text_input("Session ID", value=config["session"]["session_id"])
+    session_id = st.text_input(
+        "Session ID", value=config["session"]["session_id"]
+    )  # noqa: E501
     st.divider()
 
     # Create new config from inputs
@@ -175,7 +190,7 @@ def show_config():
 
     st.subheader("Current Configuration")
     st.write(
-        "This is the final JSON that will get parsed to TOML in .streamlit/analytics.toml"
+        "This is the final JSON that will get parsed to TOML in .streamlit/analytics.toml"  # noqa: E501
     )
     st.json(new_config)
 

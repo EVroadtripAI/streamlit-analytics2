@@ -11,7 +11,9 @@ from .state import data  # noqa: F401
 def sanitize_data(data):  # noqa: F811
     if isinstance(data, dict):
         # Recursively sanitize dictionary keys
-        return {str(k) if k else "": sanitize_data(v) for k, v in data.items() if k}
+        return {
+            str(k) if k else "": sanitize_data(v) for k, v in data.items() if k
+        }  # noqa: E501
     elif isinstance(data, list):
         # Apply sanitization to elements in lists
         return [sanitize_data(item) for item in data]
@@ -34,7 +36,8 @@ def load(
 
     if streamlit_secrets_firestore_key is not None:
         # Following along here
-        # https://blog.streamlit.io/streamlit-firestore-continued/#part-4-securely-deploying-on-streamlit-sharing for deploying to Streamlit Cloud with Firestore
+        # https://blog.streamlit.io/streamlit-firestore-continued/#part-4-securely-deploying-on-streamlit-sharing  # noqa: E501
+        # for deploying to Streamlit Cloud with Firestore
         key_dict = json.loads(st.secrets[streamlit_secrets_firestore_key])
         creds = service_account.Credentials.from_service_account_info(key_dict)
         db = firestore.Client(credentials=creds, project=firestore_project_name)
@@ -78,7 +81,8 @@ def save(
     sanitized_data = sanitize_data(data)
 
     if streamlit_secrets_firestore_key is not None:
-        # Following along here https://blog.streamlit.io/streamlit-firestore-continued/#part-4-securely-deploying-on-streamlit-sharing for deploying to Streamlit Cloud with Firestore
+        # Following along here https://blog.streamlit.io/streamlit-firestore-continued/#part-4-securely-deploying-on-streamlit-sharing  # noqa: E501
+        # for deploying to Streamlit Cloud with Firestore
         key_dict = json.loads(st.secrets[streamlit_secrets_firestore_key])
         creds = service_account.Credentials.from_service_account_info(key_dict)
         db = firestore.Client(credentials=creds, project=firestore_project_name)
@@ -89,7 +93,8 @@ def save(
     # currently hard coded to be "counts"
 
     # Attempt to save to Firestore
-    col.document(document_name).set(sanitized_data)  # creates if doesn't exist
+    # creates if doesn't exist
+    col.document(document_name).set(sanitized_data)
     if session_id is not None:
         sanitized_session_data = sanitize_data(ss.session_data)
-        col.document(session_id).set(sanitized_session_data)  # creates if doesn't exist
+        col.document(session_id).set(sanitized_session_data)
