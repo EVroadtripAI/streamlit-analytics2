@@ -1,16 +1,12 @@
 # This page is used to demo the current state of Streamlit-analytics2
-# It is deployed at https://steamlit-analytics2.streamlit.app/
-# A major feature here is testing st.secret deployment and providng a window
-# into the current state of streamlit-analytics2
-
-
-"""This demo is run through Streamlit Sharing."""
+# It is deployed at https://sa2analyticsdemo.streamlit.app/?analytics=on
+# It provides a current state of streamlit-analytics2
 
 import streamlit as st
-
 import streamlit_analytics2 as streamlit_analytics
 
-with streamlit_analytics.track():
+def main():
+
     st.title("👀 Demo app for streamlit-analytics2")
 
     # Get the software versions
@@ -35,3 +31,6 @@ with streamlit_analytics.track():
         st.write(f"Hello {name}, here's a {fav_str} for you: :{fav_str}:")
 
     st.write("...add `?analytics=on` to the URL to see the analytics dashboard 👀")
+
+with streamlit_analytics.track(save_to_json="sa2_data.json"):
+    main()
