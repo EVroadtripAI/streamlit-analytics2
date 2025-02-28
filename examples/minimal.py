@@ -38,5 +38,5 @@ st.markdown("---")
 with streamlit_analytics.track():
     st.text_input("Write your name")
     st.selectbox("Select your favorite", ["cat", "dog", "flower"])
-    st.button("Click me")
+    st.button("Click me", key="click_me")
     streamlit_analytics.data
