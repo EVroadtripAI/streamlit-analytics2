@@ -88,9 +88,9 @@ def save(
     # logging.debug("Data being saved to Firestore: %s", sanitized_counts)
 
     # Attempt to save to Firestore
-    col.document("counts").set(sanitized_counts)  # creates if doesn't exist
+    col.document("counts").set(sanitized_counts, merge=True)  # creates if doesn't exist
     if session_id is not None:
         sanitized_session_counts = sanitize_data(ss.session_counts)
         col.document(session_id).set(
-            sanitized_session_counts
+            sanitized_session_counts, merge=True
         )  # creates if doesn't exist
