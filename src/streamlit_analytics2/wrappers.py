@@ -40,25 +40,22 @@ def button(func):
     """
 
     def new_func(label, *args, **kwargs):
-        # Extract key if provided, otherwise use label
-        widget_key = kwargs.get('key', label)
-        widget_key = utils.replace_empty(widget_key)
-        
         clicked = func(label, *args, **kwargs)
-        
+        label = utils.replace_empty(label)
+
         # Update aggregate data
-        if widget_key not in data["widgets"]:
-            data["widgets"][widget_key] = 0
+        if label not in data["widgets"]:
+            data["widgets"][label] = 0
         if clicked:
-            data["widgets"][widget_key] += 1
+            data["widgets"][label] += 1
 
         # Update session data
-        if widget_key not in ss.session_data["widgets"]:
-            ss.session_data["widgets"][widget_key] = 0
+        if label not in ss.session_data["widgets"]:
+            ss.session_data["widgets"][label] = 0
         if clicked:
-            ss.session_data["widgets"][widget_key] += 1
+            ss.session_data["widgets"][label] += 1
 
-        st.session_state.state_dict[widget_key] = clicked
+        st.session_state.state_dict[label] = clicked
         return clicked
 
     return new_func
