@@ -5,7 +5,7 @@ from google.cloud import firestore
 from google.oauth2 import service_account
 from streamlit import session_state as ss
 
-from .state import data  # noqa: F401
+from .state import data, session_data  # noqa: F401
 
 
 def sanitize_data(data):  # noqa: F811
@@ -59,8 +59,8 @@ def load(
 
     if firestore_session_data is not None:
         for key in firestore_session_data:
-            if key in ss.session_data:
-                ss.session_data[key] = firestore_session_data[key]
+            if key in session_data:
+                session_data[key] = firestore_session_data[key]
 
     # Log loaded data for debugging
     # logging.debug("Data loaded from Firestore: %s", firestore_data)
@@ -96,5 +96,5 @@ def save(
     # creates if doesn't exist
     col.document(document_name).set(sanitized_data, merge=True)
     if session_id is not None:
-        sanitized_session_data = sanitize_data(ss.session_data)
+        sanitized_session_data = sanitize_data(session_data)
         col.document(session_id).set(sanitized_session_data, merge=True)

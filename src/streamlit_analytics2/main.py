@@ -12,9 +12,9 @@ from typing import Any, Dict, Optional, Union
 import streamlit as st
 from streamlit import session_state as ss
 
-from . import config, display, firestore, utils, widgets  # noqa: F811 F401
+from . import config, display, firestore, utils  # noqa: F811 F401
 from . import wrappers as _wrap
-from .state import data, reset_data
+from .state import data, reset_data, session_data
 
 # from streamlit_searchbox import st_searchbox
 
@@ -28,13 +28,13 @@ from .state import data, reset_data
 # logging.info("SA2: Streamlit-analytics2 successfully imported")
 
 
-def update_session_stats(data_dict: Dict[str, Any]):
+def update_session_stats():
     """
     Update the session data with the current state.
 
     Parameters
     ----------
-    data : Dict[str, Any]
+    data_dict : Dict[str, Any]
         Data, either aggregate or session-specific.
 
     Returns
@@ -43,28 +43,34 @@ def update_session_stats(data_dict: Dict[str, Any]):
         Updated data with the current state of time-dependent elements.
     """
     today = str(datetime.date.today())
-    if data_dict["per_day"]["days"][-1] != today:
-        # TODO: Insert 0 for all days between today and last entry.
-        data_dict["per_day"]["days"].append(today)
-        data_dict["per_day"]["pageviews"].append(0)
-        data_dict["per_day"]["script_runs"].append(0)
-    data_dict["total_script_runs"] += 1
-    data_dict["per_day"]["script_runs"][-1] += 1
     now = datetime.datetime.now()
-    data_dict["total_time_seconds"] += (
-        now - st.session_state.last_time
-    ).total_seconds()
+    
+    dicts = [data, session_data]
+    
+    for d in dicts:
+        if d["per_day"]["days"][-1] != today:
+            # TODO: Insert 0 for all days between today and last entry.
+            d["per_day"]["days"].append(today)
+            d["per_day"]["pageviews"].append(0)
+            d["per_day"]["script_runs"].append(0)
+        d["total_script_runs"] += 1
+        d["per_day"]["script_runs"][-1] += 1
+        
+        d["total_time_seconds"] += (
+            now - st.session_state.last_time
+        ).total_seconds()
+        if not st.session_state.user_tracked:
+            d["total_pageviews"] += 1
+            d["per_day"]["pageviews"][-1] += 1
+            
+    st.session_state.user_tracked = True
     st.session_state.last_time = now
-    if not st.session_state.user_tracked:
-        st.session_state.user_tracked = True
-        data_dict["total_pageviews"] += 1
-        data_dict["per_day"]["pageviews"][-1] += 1
+        
 
 
 def _track_user():
     """Track individual pageviews by storing user id to session state."""
-    update_session_stats(data)
-    update_session_stats(ss.session_data)
+    update_session_stats()
 
 
 def start_tracking(
@@ -86,7 +92,6 @@ def start_tracking(
     stop_tracking()` at the end of your streamlit script. For a more convenient
     interface, wrap your streamlit calls in `with streamlit_analytics.track():`.
     """
-    utils.initialize_session_data()
 
     if (
         streamlit_secrets_firestore_key is not None
@@ -108,7 +113,7 @@ def start_tracking(
             print(data)
             if session_id:
                 print("Loaded session count data from firestore:")
-                print(ss.session_data)
+                print(session_data)
             print()
 
     elif firestore_key_file and not data["loaded_from_firestore"]:
@@ -314,7 +319,7 @@ def stop_tracking(
             print("Saving count data to firestore:")
             print(data)
             print("Saving session count data to firestore:")
-            print(ss.session_data)
+            print(session_data)
             print()
 
         # Save both global and session data in a single call

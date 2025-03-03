@@ -4,7 +4,7 @@ import streamlit as st
 from streamlit import session_state as ss
 
 from . import utils
-from .state import data
+from .state import data, session_data
 
 
 def checkbox(func):
@@ -23,10 +23,10 @@ def checkbox(func):
             data["widgets"][label] += 1
 
         # Update session data
-        if label not in ss.session_data["widgets"]:
-            ss.session_data["widgets"][label] = 0
+        if label not in session_data["widgets"]:
+            session_data["widgets"][label] = 0
         if checked != st.session_state.state_dict.get(label, None):
-            ss.session_data["widgets"][label] += 1
+            session_data["widgets"][label] += 1
 
         st.session_state.state_dict[label] = checked
         return checked
@@ -50,10 +50,10 @@ def button(func):
             data["widgets"][label] += 1
 
         # Update session data
-        if label not in ss.session_data["widgets"]:
-            ss.session_data["widgets"][label] = 0
+        if label not in session_data["widgets"]:
+            session_data["widgets"][label] = 0
         if clicked:
-            ss.session_data["widgets"][label] += 1
+            session_data["widgets"][label] += 1
 
         st.session_state.state_dict[label] = clicked
         return clicked
@@ -81,10 +81,10 @@ def file_uploader(func):
             data["widgets"][label] += 1
 
         # Update session data
-        if label not in ss.session_data["widgets"]:
-            ss.session_data["widgets"][label] = 0
+        if label not in session_data["widgets"]:
+            session_data["widgets"][label] = 0
         if uploaded_file and not st.session_state.state_dict.get(label, None):
-            ss.session_data["widgets"][label] += 1
+            session_data["widgets"][label] += 1
 
         st.session_state.state_dict[label] = bool(uploaded_file)
         return uploaded_file
@@ -115,14 +115,14 @@ def select(func):
             data["widgets"][label][selected] += 1
 
         # Update session data
-        if label not in ss.session_data["widgets"]:
-            ss.session_data["widgets"][label] = {}
+        if label not in session_data["widgets"]:
+            session_data["widgets"][label] = {}
         for option in options:
             option = utils.replace_empty(option)
-            if option not in ss.session_data["widgets"][label]:
-                ss.session_data["widgets"][label][option] = 0
+            if option not in session_data["widgets"][label]:
+                session_data["widgets"][label][option] = 0
         if selected != st.session_state.state_dict.get(label, None):
-            ss.session_data["widgets"][label][selected] += 1
+            session_data["widgets"][label][selected] += 1
 
         st.session_state.state_dict[label] = selected
         return orig_selected
@@ -153,16 +153,16 @@ def multiselect(func):
                 data["widgets"][label][sel] += 1
 
         # Update session data
-        if label not in ss.session_data["widgets"]:
-            ss.session_data["widgets"][label] = {}
+        if label not in session_data["widgets"]:
+            session_data["widgets"][label] = {}
         for option in options:
             option = utils.replace_empty(option)
-            if option not in ss.session_data["widgets"][label]:
-                ss.session_data["widgets"][label][option] = 0
+            if option not in session_data["widgets"][label]:
+                session_data["widgets"][label][option] = 0
         for sel in selected:
             sel = utils.replace_empty(sel)
             if sel not in st.session_state.state_dict.get(label, []):
-                ss.session_data["widgets"][label][sel] += 1
+                session_data["widgets"][label][sel] += 1
 
         st.session_state.state_dict[label] = selected
         return selected
@@ -185,8 +185,8 @@ def value(func):
             data["widgets"][label] = {}
 
         # Update session data
-        if label not in ss.session_data["widgets"]:
-            ss.session_data["widgets"][label] = {}
+        if label not in session_data["widgets"]:
+            session_data["widgets"][label] = {}
 
         formatted_value = utils.replace_empty(value)
         if type(value) is tuple and len(value) == 2:
@@ -203,12 +203,12 @@ def value(func):
 
         if formatted_value not in data["widgets"][label]:
             data["widgets"][label][formatted_value] = 0
-        if formatted_value not in ss.session_data["widgets"][label]:
-            ss.session_data["widgets"][label][formatted_value] = 0
+        if formatted_value not in session_data["widgets"][label]:
+            session_data["widgets"][label][formatted_value] = 0
 
         if formatted_value != st.session_state.state_dict.get(label, None):
             data["widgets"][label][formatted_value] += 1
-            ss.session_data["widgets"][label][formatted_value] += 1
+            session_data["widgets"][label][formatted_value] += 1
 
         st.session_state.state_dict[label] = formatted_value
         return value
@@ -231,19 +231,19 @@ def chat_input(func):
             data["widgets"][placeholder] = {}
 
         # Update session data
-        if placeholder not in ss.session_data["widgets"]:
-            ss.session_data["widgets"][placeholder] = {}
+        if placeholder not in session_data["widgets"]:
+            session_data["widgets"][placeholder] = {}
 
         formatted_value = str(value)
 
         if formatted_value not in data["widgets"][placeholder]:
             data["widgets"][placeholder][formatted_value] = 0
-        if formatted_value not in ss.session_data["widgets"][placeholder]:
-            ss.session_data["widgets"][placeholder][formatted_value] = 0
+        if formatted_value not in session_data["widgets"][placeholder]:
+            session_data["widgets"][placeholder][formatted_value] = 0
 
         if formatted_value != st.session_state.state_dict.get(placeholder):
             data["widgets"][placeholder][formatted_value] += 1
-            ss.session_data["widgets"][placeholder][formatted_value] += 1
+            session_data["widgets"][placeholder][formatted_value] += 1
 
         st.session_state.state_dict[placeholder] = formatted_value
         return value
