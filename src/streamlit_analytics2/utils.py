@@ -1,9 +1,3 @@
-import datetime
-from typing import Any, Dict
-
-from streamlit import session_state as ss
-
-
 def format_seconds(s: int) -> str:
     """Formats seconds to 00:00:00 format."""
     # days, remainder = divmod(s, 86400)
@@ -32,5 +26,3 @@ def replace_empty(s):
         return " "
     else:
         return s
-
-    return output

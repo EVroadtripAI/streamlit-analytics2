@@ -5,10 +5,11 @@ import datetime
 data = {"loaded_from_firestore": False}
 session_data = {"loaded_from_firestore": False}
 
+
 def reset_data():
     # Use yesterday as first entry to make chart look better.
     yesterday = str(datetime.date.today() - datetime.timedelta(days=1))
-    
+
     for d in [data, session_data]:
         d["total_pageviews"] = 0
         d["total_script_runs"] = 0

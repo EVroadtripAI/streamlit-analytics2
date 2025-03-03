@@ -1,7 +1,6 @@
 import datetime
 
 import streamlit as st
-from streamlit import session_state as ss
 
 from . import utils
 from .state import data, session_data

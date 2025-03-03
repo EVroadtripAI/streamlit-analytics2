@@ -3,7 +3,6 @@ import json
 import streamlit as st
 from google.cloud import firestore
 from google.oauth2 import service_account
-from streamlit import session_state as ss
 
 from .state import data, session_data  # noqa: F401
 

@@ -7,10 +7,9 @@ import json
 import logging
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Optional, Union
 
 import streamlit as st
-from streamlit import session_state as ss
 
 from . import config, display, firestore, utils  # noqa: F811 F401
 from . import wrappers as _wrap
@@ -44,9 +43,9 @@ def update_session_stats():
     """
     today = str(datetime.date.today())
     now = datetime.datetime.now()
-    
+
     dicts = [data, session_data]
-    
+
     for d in dicts:
         if d["per_day"]["days"][-1] != today:
             # TODO: Insert 0 for all days between today and last entry.
@@ -55,17 +54,14 @@ def update_session_stats():
             d["per_day"]["script_runs"].append(0)
         d["total_script_runs"] += 1
         d["per_day"]["script_runs"][-1] += 1
-        
-        d["total_time_seconds"] += (
-            now - st.session_state.last_time
-        ).total_seconds()
+
+        d["total_time_seconds"] += (now - st.session_state.last_time).total_seconds()
         if not st.session_state.user_tracked:
             d["total_pageviews"] += 1
             d["per_day"]["pageviews"][-1] += 1
-            
+
     st.session_state.user_tracked = True
     st.session_state.last_time = now
-        
 
 
 def _track_user():
