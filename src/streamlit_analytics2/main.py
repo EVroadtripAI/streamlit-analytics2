@@ -52,8 +52,12 @@ def update_session_stats():
             d["per_day"]["days"].append(today)
             d["per_day"]["pageviews"].append(0)
             d["per_day"]["script_runs"].append(0)
+            d["per_day"]["session_time_seconds"].append(0)
         d["total_script_runs"] += 1
         d["per_day"]["script_runs"][-1] += 1
+        d["per_day"]["session_time_seconds"][-1] += (
+            now - st.session_state.last_time
+        ).total_seconds()
 
         d["total_time_seconds"] += (now - st.session_state.last_time).total_seconds()
         if not st.session_state.user_tracked:
