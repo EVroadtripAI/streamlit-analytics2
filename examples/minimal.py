@@ -40,4 +40,5 @@ with streamlit_analytics.track():
     st.selectbox("Select your favorite", ["cat", "dog", "flower"], key="favorite")
     st.button("Click me", key="click_me")
     streamlit_analytics.data
+    streamlit_analytics.session_data
 
