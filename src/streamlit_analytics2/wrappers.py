@@ -14,18 +14,18 @@ def checkbox(func):
     def new_func(label, *args, **kwargs):
         checked = func(label, *args, **kwargs)
         label = utils.replace_empty(label)
+        
+        dicts = [data, session_data]
 
-        # Update aggregate data
-        if label not in data["widgets"]:
-            data["widgets"][label] = 0
-        if checked != st.session_state.state_dict.get(label, None):
-            data["widgets"][label] += 1
+        for d in dicts:
 
-        # Update session data
-        if label not in session_data["widgets"]:
-            session_data["widgets"][label] = 0
-        if checked != st.session_state.state_dict.get(label, None):
-            session_data["widgets"][label] += 1
+            # Update aggregate data
+            if label not in d["widgets"]:
+                d["widgets"][label] = 0
+                d["per_day"]["widgets"][label] = 0
+            if checked != st.session_state.state_dict.get(label, None):
+                d["widgets"][label] += 1
+                d["per_day"]["widgets"][label] += 1
 
         st.session_state.state_dict[label] = checked
         return checked
