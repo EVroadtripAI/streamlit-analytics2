@@ -41,18 +41,17 @@ def button(func):
     def new_func(label, *args, **kwargs):
         clicked = func(label, *args, **kwargs)
         label = utils.replace_empty(label)
+        
+        dicts = [data, session_data]
 
-        # Update aggregate data
-        if label not in data["widgets"]:
-            data["widgets"][label] = 0
-        if clicked:
-            data["widgets"][label] += 1
-
-        # Update session data
-        if label not in session_data["widgets"]:
-            session_data["widgets"][label] = 0
-        if clicked:
-            session_data["widgets"][label] += 1
+        for d in dicts:
+            # Update aggregate data
+            if label not in d["widgets"]:
+                d["widgets"][label] = 0
+                d["per_day"]["widgets"][label] = 0
+            if clicked:
+                d["widgets"][label] += 1
+                d["per_day"]["widgets"][label] += 1
 
         st.session_state.state_dict[label] = clicked
         return clicked

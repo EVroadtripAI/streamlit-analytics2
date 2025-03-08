@@ -19,6 +19,7 @@ def reset_data():
             "pageviews": [0],
             "script_runs": [0],
             "session_time_seconds": [0],
+            "widgets": {},
         }
         d["widgets"] = {}
         d["start_time"] = datetime.datetime.now().strftime("%d %b %Y, %H:%M:%S")
