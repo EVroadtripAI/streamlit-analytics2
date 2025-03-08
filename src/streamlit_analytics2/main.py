@@ -53,6 +53,7 @@ def update_session_stats():
             d["per_day"]["pageviews"].append(0)
             d["per_day"]["script_runs"].append(0)
             d["per_day"]["session_time_seconds"].append(0)
+            d["per_day"]["widgets"].append({})
         d["total_script_runs"] += 1
         d["per_day"]["script_runs"][-1] += 1
         d["per_day"]["session_time_seconds"][-1] += (

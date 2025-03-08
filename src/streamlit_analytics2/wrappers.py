@@ -22,10 +22,11 @@ def checkbox(func):
             # Update aggregate data
             if label not in d["widgets"]:
                 d["widgets"][label] = 0
-                d["per_day"]["widgets"][label] = 0
+            if label not in d["per_day"]["widgets"][-1]:
+                d["per_day"]["widgets"][-1][label] = 0
             if checked != st.session_state.state_dict.get(label, None):
                 d["widgets"][label] += 1
-                d["per_day"]["widgets"][label] += 1
+                d["per_day"]["widgets"][-1][label] += 1
 
         st.session_state.state_dict[label] = checked
         return checked
@@ -46,10 +47,11 @@ def button(func):
             # Update aggregate data
             if label not in d["widgets"]:
                 d["widgets"][label] = 0
-                d["per_day"]["widgets"][label] = 0
+            if label not in d["per_day"]["widgets"][-1]:
+                d["per_day"]["widgets"][-1][label] = 0
             if clicked:
                 d["widgets"][label] += 1
-                d["per_day"]["widgets"][label] += 1
+                d["per_day"]["widgets"][-1][label] += 1
 
         st.session_state.state_dict[label] = clicked
         return clicked
@@ -70,14 +72,15 @@ def file_uploader(func):
             # Update aggregate data
             if label not in d["widgets"]:
                 d["widgets"][label] = 0
-                d["per_day"]["widgets"][label] = 0
+            if label not in d["per_day"]["widgets"][-1]:
+                d["per_day"]["widgets"][-1][label] = 0
             # TODO: Right now this doesn't track when multiple files are uploaded
             # one after another. Maybe compare files directly (but probably not
             # very clever to store in session state) or hash them somehow and check
             # if a different file was uploaded.
             if uploaded_file and not st.session_state.state_dict.get(label, None):
                 d["widgets"][label] += 1
-                d["per_day"]["widgets"][label] += 1
+                d["per_day"]["widgets"][-1][label] += 1
 
         st.session_state.state_dict[label] = bool(uploaded_file)
         return uploaded_file
@@ -101,19 +104,19 @@ def select(func):
             # Update aggregate data
             if label not in d["widgets"]:
                 d["widgets"][label] = {}
-            if label not in d["per_day"]["widgets"]:
-                d["per_day"]["widgets"][label] = {}
+            if label not in d["per_day"]["widgets"][-1]:
+                d["per_day"]["widgets"][-1][label] = {}
                 
             for option in options:
                 option = utils.replace_empty(option)
                 if option not in d["widgets"][label]:
                     d["widgets"][label][option] = 0
-                if option not in d["per_day"]["widgets"].get(label, {}):
-                    d["per_day"]["widgets"][label][option] = 0
+                if option not in d["per_day"]["widgets"][-1].get(label, {}):
+                    d["per_day"]["widgets"][-1][label][option] = 0
                     
             if selected != st.session_state.state_dict.get(label, None):
                 d["widgets"][label][selected] += 1
-                d["per_day"]["widgets"][label][selected] = d["per_day"]["widgets"][label].get(selected, 0) + 1
+                d["per_day"]["widgets"][-1][label][selected] = d["per_day"]["widgets"][-1][label].get(selected, 0) + 1
 
         st.session_state.state_dict[label] = selected
         return orig_selected
@@ -134,21 +137,21 @@ def multiselect(func):
         for d in dicts:
             if label not in d["widgets"]:
                 d["widgets"][label] = {}
-            if label not in d["per_day"]["widgets"]:
-                d["per_day"]["widgets"][label] = {}
+            if label not in d["per_day"]["widgets"][-1]:
+                d["per_day"]["widgets"][-1][label] = {}
                 
             for option in options:
                 option = utils.replace_empty(option)
                 if option not in d["widgets"][label]:
                     d["widgets"][label][option] = 0
-                if option not in d["per_day"]["widgets"].get(label, {}):
-                    d["per_day"]["widgets"][label][option] = 0
+                if option not in d["per_day"]["widgets"][-1].get(label, {}):
+                    d["per_day"]["widgets"][-1][label][option] = 0
                     
             for sel in selected:
                 sel = utils.replace_empty(sel)
                 if sel not in st.session_state.state_dict.get(label, []):
                     d["widgets"][label][sel] += 1
-                    d["per_day"]["widgets"][label][sel] += 1
+                    d["per_day"]["widgets"][-1][label][sel] += 1
 
         st.session_state.state_dict[label] = selected
         return selected
@@ -183,17 +186,17 @@ def value(func):
         for d in dicts:
             if label not in d["widgets"]:
                 d["widgets"][label] = {}
-            if label not in d["per_day"]["widgets"]:
-                d["per_day"]["widgets"][label] = {}
+            if label not in d["per_day"]["widgets"][-1]:
+                d["per_day"]["widgets"][-1][label] = {}
                 
             if formatted_value not in d["widgets"][label]:
                 d["widgets"][label][formatted_value] = 0
-            if formatted_value not in d["per_day"]["widgets"].get(label, {}):
-                d["per_day"]["widgets"][label][formatted_value] = 0
+            if formatted_value not in d["per_day"]["widgets"][-1].get(label, {}):
+                d["per_day"]["widgets"][-1][label][formatted_value] = 0
                 
             if formatted_value != st.session_state.state_dict.get(label, None):
                 d["widgets"][label][formatted_value] += 1
-                d["per_day"]["widgets"][label][formatted_value] += 1
+                d["per_day"]["widgets"][-1][label][formatted_value] += 1
 
         st.session_state.state_dict[label] = formatted_value
         return value
@@ -217,17 +220,17 @@ def chat_input(func):
             # Update aggregate data
             if placeholder not in d["widgets"]:
                 d["widgets"][placeholder] = {}
-            if placeholder not in d["per_day"]["widgets"]:
-                d["per_day"]["widgets"][placeholder] = {}
+            if placeholder not in d["per_day"]["widgets"][-1]:
+                d["per_day"]["widgets"][-1][placeholder] = {}
                 
             if formatted_value not in d["widgets"][placeholder]:
                 d["widgets"][placeholder][formatted_value] = 0
-            if formatted_value not in d["per_day"]["widgets"].get(placeholder, {}):
-                d["per_day"]["widgets"][placeholder][formatted_value] = 0
+            if formatted_value not in d["per_day"]["widgets"][-1].get(placeholder, {}):
+                d["per_day"]["widgets"][-1][placeholder][formatted_value] = 0
                 
             if formatted_value != st.session_state.state_dict.get(placeholder):
                 d["widgets"][placeholder][formatted_value] += 1
-                d["per_day"]["widgets"][placeholder][formatted_value] += 1
+                d["per_day"]["widgets"][-1][placeholder][formatted_value] += 1
 
         st.session_state.state_dict[placeholder] = formatted_value
         return input_received
