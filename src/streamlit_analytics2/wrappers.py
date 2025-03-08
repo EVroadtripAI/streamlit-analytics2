@@ -16,7 +16,7 @@ def checkbox(func):
     def new_func(label, *args, **kwargs):
         checked = func(label, *args, **kwargs)
         label = utils.replace_empty(label)
-        
+
         for d in dicts:
 
             # Update aggregate data
@@ -42,7 +42,7 @@ def button(func):
     def new_func(label, *args, **kwargs):
         clicked = func(label, *args, **kwargs)
         label = utils.replace_empty(label)
-        
+
         for d in dicts:
             # Update aggregate data
             if label not in d["widgets"]:
@@ -106,17 +106,19 @@ def select(func):
                 d["widgets"][label] = {}
             if label not in d["per_day"]["widgets"][-1]:
                 d["per_day"]["widgets"][-1][label] = {}
-                
+
             for option in options:
                 option = utils.replace_empty(option)
                 if option not in d["widgets"][label]:
                     d["widgets"][label][option] = 0
                 if option not in d["per_day"]["widgets"][-1].get(label, {}):
                     d["per_day"]["widgets"][-1][label][option] = 0
-                    
+
             if selected != st.session_state.state_dict.get(label, None):
                 d["widgets"][label][selected] += 1
-                d["per_day"]["widgets"][-1][label][selected] = d["per_day"]["widgets"][-1][label].get(selected, 0) + 1
+                d["per_day"]["widgets"][-1][label][selected] = (
+                    d["per_day"]["widgets"][-1][label].get(selected, 0) + 1
+                )
 
         st.session_state.state_dict[label] = selected
         return orig_selected
@@ -139,14 +141,14 @@ def multiselect(func):
                 d["widgets"][label] = {}
             if label not in d["per_day"]["widgets"][-1]:
                 d["per_day"]["widgets"][-1][label] = {}
-                
+
             for option in options:
                 option = utils.replace_empty(option)
                 if option not in d["widgets"][label]:
                     d["widgets"][label][option] = 0
                 if option not in d["per_day"]["widgets"][-1].get(label, {}):
                     d["per_day"]["widgets"][-1][label][option] = 0
-                    
+
             for sel in selected:
                 sel = utils.replace_empty(sel)
                 if sel not in st.session_state.state_dict.get(label, []):
@@ -188,12 +190,12 @@ def value(func):
                 d["widgets"][label] = {}
             if label not in d["per_day"]["widgets"][-1]:
                 d["per_day"]["widgets"][-1][label] = {}
-                
+
             if formatted_value not in d["widgets"][label]:
                 d["widgets"][label][formatted_value] = 0
             if formatted_value not in d["per_day"]["widgets"][-1].get(label, {}):
                 d["per_day"]["widgets"][-1][label][formatted_value] = 0
-                
+
             if formatted_value != st.session_state.state_dict.get(label, None):
                 d["widgets"][label][formatted_value] += 1
                 d["per_day"]["widgets"][-1][label][formatted_value] += 1
@@ -213,7 +215,7 @@ def chat_input(func):
 
     def new_func(placeholder, *args, **kwargs):
         input_received = func(placeholder, *args, **kwargs)
-        
+
         formatted_value = str(input_received)
 
         for d in dicts:
@@ -222,12 +224,12 @@ def chat_input(func):
                 d["widgets"][placeholder] = {}
             if placeholder not in d["per_day"]["widgets"][-1]:
                 d["per_day"]["widgets"][-1][placeholder] = {}
-                
+
             if formatted_value not in d["widgets"][placeholder]:
                 d["widgets"][placeholder][formatted_value] = 0
             if formatted_value not in d["per_day"]["widgets"][-1].get(placeholder, {}):
                 d["per_day"]["widgets"][-1][placeholder][formatted_value] = 0
-                
+
             if formatted_value != st.session_state.state_dict.get(placeholder):
                 d["widgets"][placeholder][formatted_value] += 1
                 d["per_day"]["widgets"][-1][placeholder][formatted_value] += 1

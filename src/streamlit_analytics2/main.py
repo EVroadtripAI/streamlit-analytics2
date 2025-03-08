@@ -50,27 +50,27 @@ def update_session_stats():
         # Allow backwards compatiability with old data structure and firestore
         new_list = [0 for i in range(len(d["per_day"]["days"]))]
         new_list_widgets = [{} for i in range(len(d["per_day"]["days"]))]
-        
+
         if d["per_day"]["days"][-1] != today:
             # Fill in all but last missing day (which will be appended later)
             if "session_time_seconds" not in d["per_day"]:
                 d["per_day"]["session_time_seconds"] = new_list[:-1]
             if "widgets" not in d["per_day"]:
                 d["per_day"]["widgets"] = new_list_widgets[:-1]
-            
+
             # TODO: Insert 0 for all days between today and last entry.
             d["per_day"]["days"].append(today)
             d["per_day"]["pageviews"].append(0)
             d["per_day"]["script_runs"].append(0)
             d["per_day"]["session_time_seconds"].append(0)
             d["per_day"]["widgets"].append({})
-            
+
         # Fill in all missing days
         if "session_time_seconds" not in d["per_day"]:
             d["per_day"]["session_time_seconds"] = new_list
         if "widgets" not in d["per_day"]:
             d["per_day"]["widgets"] = new_list_widgets
-            
+
         d["total_script_runs"] += 1
         d["per_day"]["script_runs"][-1] += 1
         d["per_day"]["session_time_seconds"][-1] += (
