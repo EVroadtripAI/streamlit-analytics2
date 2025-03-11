@@ -539,3 +539,27 @@ if __name__ == "streamlit_analytics2.main":
     # _orig_sidebar_toggle = st.sidebar.toggle
     # _orig_sidebar_camera_input = st.sidebar.camera_input
     
+def delete_session_data(
+    session_id: str,
+    firestore_collection_name: str,
+    firestore_project_name: Optional[str] = None,
+    firestore_key_file: Optional[str] = None,
+    streamlit_secrets_firestore_key: Optional[str] = None,
+):
+    """Delete session data from firestore."""
+    
+    # Don't do anythikng if passed an empty string or None for session_id
+    if session_id is None or session_id == "":
+        print("No session ID provided, skipping deletion")
+        return
+    
+    if session_data["loaded_from_firestore"] and firestore_collection_name is None:
+        raise ValueError("firestore_collection_name must be provided if session data was loaded from firestore")
+    elif session_data["loaded_from_firestore"]:
+        firestore.delete(
+            session_id,
+            firestore_collection_name,
+            service_account_json=firestore_key_file,
+            streamlit_secrets_firestore_key=streamlit_secrets_firestore_key,
+            firestore_project_name=firestore_project_name,
+        )
