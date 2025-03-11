@@ -35,7 +35,12 @@ st.write(f"streamlit_analytics2 version: {streamlit_analytics_version}")
 
 st.markdown("---")
 
-with streamlit_analytics.track():
+session_id = st.text_input("Session ID", help="This is the session ID that will be used to track individual session data. If not provided, tracking only occurs at an aggregate level.")
+
+if session_id is not None and session_id == "":
+    session_id = None
+
+with streamlit_analytics.track(session_id=session_id):
     st.text_input("Write your name", key="name")
     st.selectbox("Select your favorite", ["cat", "dog", "flower"], key="favorite")
     st.button("Click me", key="click_me")
