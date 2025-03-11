@@ -131,6 +131,7 @@ def start_tracking(
             session_id=session_id,  # This will load global and session data
         )
         data["loaded_from_firestore"] = True
+        session_data["loaded_from_firestore"] = True
         if verbose:
             print("Loaded count data from firestore:")
             print(data)
@@ -150,6 +151,7 @@ def start_tracking(
             session_id=session_id,
         )
         data["loaded_from_firestore"] = True
+        session_data["loaded_from_firestore"] = True
         if verbose:
             print("Loaded count data from firestore:")
             print(data)
@@ -536,3 +538,4 @@ if __name__ == "streamlit_analytics2.main":
     # _orig_sidebar_page_link = st.sidebar.page_link
     # _orig_sidebar_toggle = st.sidebar.toggle
     # _orig_sidebar_camera_input = st.sidebar.camera_input
+    
