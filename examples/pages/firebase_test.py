@@ -4,7 +4,7 @@ import streamlit_analytics2 as streamlit_analytics
 
 COLLECTION_NAME = "streamlit-analytics-secrets-approach"
 DOCUMENT_NAME = "counts"
-PROJECT_NAME = "ev-monitoring-poc"
+PROJECT_NAME = "streamlit-analytics"
 
 session_id = st.text_input("Session ID", help="This is the session ID that will be used to track individual session data. If not provided, tracking only occurs at an aggregate level.")
 
