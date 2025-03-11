@@ -100,12 +100,13 @@ def save(
         sanitized_session_data = sanitize_data(session_data)
         col.document(session_id).set(sanitized_session_data, merge=True)
 
+
 def delete(
     document_name: str,  # noqa: F811
     collection_name: str,
     service_account_json: Optional[Union[str, Path]] = None,
     streamlit_secrets_firestore_key: Optional[str] = None,
-    firestore_project_name: Optional[str] = None
+    firestore_project_name: Optional[str] = None,
 ):
     """Delete a document from firestore. Commonly used to delete session data when requested by a user by passing session_id as document_name."""
     if streamlit_secrets_firestore_key is not None:
