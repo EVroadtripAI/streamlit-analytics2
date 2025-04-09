@@ -4,7 +4,7 @@ import streamlit_analytics2 as streamlit_analytics
 
 COLLECTION_NAME = "streamlit-analytics-secrets-approach"
 DOCUMENT_NAME = "counts"
-PROJECT_NAME = "streamlit-analytics"
+PROJECT_NAME = "ev-monitoring-poc"
 
 session_id = st.text_input("Session ID", help="This is the session ID that will be used to track individual session data. If not provided, tracking only occurs at an aggregate level.")
 
@@ -51,28 +51,27 @@ with tab1:
 # Advanced storing of key in secrets.toml
 with tab2:
     st.header("Advanced")
-    # if st.button("Test Advanced"):
 
-    #     with streamlit_analytics.track(
-    #         firestore_collection_name=COLLECTION_NAME,
-    #         streamlit_secrets_firestore_key="firebase",
-    #         firestore_project_name=PROJECT_NAME,
-    #         session_id=session_id,
-    #         verbose=False):
+    with streamlit_analytics.track(
+        firestore_collection_name=COLLECTION_NAME,
+        streamlit_secrets_firestore_key="firebase",
+        firestore_project_name=PROJECT_NAME,
+        session_id=session_id,
+        verbose=False):
 
-    #         st.text_input("Write something", key="text_input2")
-    #         st.button("Click me", key="button2")
+        st.text_input("Write something", key="text_input2")
+        st.button("Click me", key="button2")
 
-    #         st.write("# Aggregate Stats")
-    #         st.write(streamlit_analytics.data)
-    #         st.write("# Session Stats")
-    #         st.write(streamlit_analytics.session_data)
+        st.write("# Aggregate Stats")
+        st.write(streamlit_analytics.data)
+        st.write("# Session Stats")
+        st.write(streamlit_analytics.session_data)
 
-    # if st.button("Delete session data", key="delete_advanced"):
-    #     print("Session deletion button clicked")
-    #     streamlit_analytics.delete_session_data(
-    #         session_id,
-    #         COLLECTION_NAME,
-    #         firestore_project_name=PROJECT_NAME,
-    #         streamlit_secrets_firestore_key="firebase",
-    #     )
+    if st.button("Delete session data", key="delete_advanced"):
+        print("Session deletion button clicked")
+        streamlit_analytics.delete_session_data(
+            session_id,
+            COLLECTION_NAME,
+            firestore_project_name=PROJECT_NAME,
+            streamlit_secrets_firestore_key="firebase",
+        )
